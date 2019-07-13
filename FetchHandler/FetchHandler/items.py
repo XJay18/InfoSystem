@@ -8,7 +8,7 @@
 import scrapy
 
 
-class FetchHandlerItem(scrapy.Item):
+class InfoItem(scrapy.Item):
     title = scrapy.Field()
     name = scrapy.Field()
     issuedDate = scrapy.Field()
