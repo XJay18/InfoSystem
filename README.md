@@ -11,7 +11,7 @@ Database Practical Training Assignment
     - [ ] **Basic Requirements:** crawling the following web site academic report lecture notification.
         - http://www.scut.edu.cn/sse/
         - http://www.scut.edu.cn/cs/
-        - http://xxxy.jnu.edu.cn/
+        - https://xxxy2016.jnu.edu.cn/
         - http://info.scau.edu.cn/news-cate-3.asp
         - http://eecs.pku.edu.cn/
         - http://iiis.tsinghua.edu.cn/zh/seminars/
