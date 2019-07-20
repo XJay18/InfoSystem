@@ -3,7 +3,7 @@ from ..items import InfoItem
 
 
 class IF_JNU(scrapy.Spider):
-    name = 'if_jnu'
+    name = 'jnu'
     start_urls = []
     n_pages = 3
 
@@ -30,10 +30,12 @@ class IF_JNU(scrapy.Spider):
                     "//h2[@class='title']/text()"
                 ).extract()[0]
             # print(item['title'])
-
-            item['issued_time'] = response.xpath(
+            issued_time = response.xpath(
                 "//div[@class='property']//span[3]/text()"
             ).extract()[0].split("：")[1]
+            issued_time = issued_time.replace('年', '-')
+            issued_time = issued_time.replace('月', '-')
+            item['issued_time'] = issued_time.replace('日', '')
             item['url'] = response.request.url
             item['uni'] = 'JNU'
             yield item

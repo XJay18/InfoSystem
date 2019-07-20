@@ -28,9 +28,12 @@ class CS_SCUT(scrapy.Spider):
             "//div[@class='NewsTitle']/text()"
         ).extract()[0].strip()
         # print(item['title'])
-        item['issued_time'] = response.xpath(
+        issued_time = response.xpath(
             "//div[@class='NewsDate']//a[@class='putDate']/text()"
         ).extract()[0]
+        issued_time = issued_time.replace('年', '-')
+        issued_time = issued_time.replace('月', '-')
+        item['issued_time'] = issued_time.replace('日', '')
         # print(item['issuedDate'])
         item['url'] = response.request.url
         item['uni'] = 'SCUT'
