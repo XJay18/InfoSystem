@@ -31,12 +31,11 @@ class IF_JNU(scrapy.Spider):
                 ).extract()[0]
             # print(item['title'])
 
-            item['issuedDate'] = response.xpath(
+            item['issued_time'] = response.xpath(
                 "//div[@class='property']//span[3]/text()"
             ).extract()[0].split("：")[1]
-            # print(item['issuedDate'])
-
             item['url'] = response.request.url
+            item['uni'] = 'JNU'
             yield item
         else:
             pass
