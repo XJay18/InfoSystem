@@ -1,21 +1,16 @@
 import scrapy
 from ..items import InfoItem
+from ..utils import is_interested
+
+URL = []
 
 
 class PKU(scrapy.Spider):
     name = 'pku'
     start_urls = ['http://eecs.pku.edu.cn/xygk1/jzxx1.htm']
 
-    # n_pages = 3
-
-    # for i in range(n_pages):
-    #     start_urls.append("http://info.scau.edu.cn/3762/list" + str(i + 1) + ".htm")
-
     def parse(self, response):
         second_index = response.xpath("//a[contains(string(),'下一页')]/@href").extract()[0].split('/')[1][0]
-        print("*" * 80)
-        print(second_index)
-        print("*" * 80)
         url = []
         for i in range(3):
             if i == 0:
@@ -24,9 +19,6 @@ class PKU(scrapy.Spider):
                 href = 'http://eecs.pku.edu.cn/xygk1/jzxx1/' + str(int(second_index) - i + 1) + '.htm'
                 url.append(href)
         for i in url:
-            print("*" * 80)
-            print(i)
-            print("*" * 80)
             yield scrapy.Request(i, callback=self.parse_utils)
 
     def parse_utils(self, response):
@@ -40,13 +32,30 @@ class PKU(scrapy.Spider):
 
     def parse_dir_contents(self, response):
         item = InfoItem()
-        item['title'] = response.xpath(
+
+        # check if the lecture is able to be selected
+        title = response.xpath(
             "//head//title/text()"
         ).extract()[0].strip().split("-")[0]
-        # print(item['title'])
-        item['issued_time'] = response.xpath(
-            "//p[contains(string(),'发布时间')]/text()"
-        ).extract()[0].split('：')[1]
-        item['url'] = response.request.url
-        item['uni'] = 'PKU'
-        yield item
+        des = response.xpath(
+            "//div[@class='v_news_content']//text()"
+        ).extract()
+        text = [title]
+        for i in des:
+            if i.strip() != "":
+                text.append(i.strip())
+        description = "".join(text)
+        if is_interested(description.lower()) and response.request.url not in URL:
+            # interested
+            URL.append(response.request.url)
+            item['title'] = title
+            item['issued_time'] = response.xpath(
+                "//p[contains(string(),'发布时间')]/text()"
+            ).extract()[0].split('：')[1]
+            item['url'] = response.request.url
+            item['uni'] = 'PKU'
+            yield item
+
+        # not interested
+        print("title: %s not interested." % title)
+        return

@@ -1,5 +1,8 @@
 import scrapy
 from ..items import InfoItem
+from ..utils import is_interested
+
+URL = []
 
 
 class SE_SCUT(scrapy.Spider):
@@ -17,13 +20,26 @@ class SE_SCUT(scrapy.Spider):
 
     def parse_dir_contents(self, response):
         item = InfoItem()
-        item['title'] = response.xpath(
+
+        # check if the lecture is able to be selected
+        title = response.xpath(
             "//div[@class='arti_cont']//h2/text()"
         ).extract()[0].strip()
-        # print(item['title'])
-        item['issued_time'] = response.xpath(
-            "//span[@class='arti_update']/text()"
-        ).extract()[0].split("：")[1]
-        item['url'] = response.request.url
-        item['uni'] = 'SCUT'
-        yield item
+        description = response.xpath(
+            "//meta[@name='description']/@content"
+        ).extract()[0].strip()
+        description = "\n".join([title, description])
+        if is_interested(description.lower()) and response.request.url not in URL:
+            # interested
+            URL.append(response.request.url)
+            item['title'] = title
+            item['issued_time'] = response.xpath(
+                "//span[@class='arti_update']/text()"
+            ).extract()[0].split("：")[1]
+            item['url'] = response.request.url
+            item['uni'] = 'SCUT'
+            yield item
+
+        # not interested
+        print("title: %s not interested." % title)
+        return

@@ -1,5 +1,8 @@
 import scrapy
 from ..items import InfoItem
+from ..utils import is_interested
+
+URL = []
 
 
 class SCAU(scrapy.Spider):
@@ -17,13 +20,30 @@ class SCAU(scrapy.Spider):
 
     def parse_dir_contents(self, response):
         item = InfoItem()
-        item['title'] = response.xpath(
+
+        # check if the lecture is able to be selected
+        title = response.xpath(
             "//head//title/text()"
         ).extract()[0].strip()
-        # print(item['title'])
-        item['issued_time'] = response.xpath(
-            "//span[contains(string(),'发布时间')]/text()"
-        ).extract()[0].split(':')[1]
-        item['url'] = response.request.url
-        item['uni'] = 'SCAU'
-        yield item
+        des = response.xpath(
+            "//div[@class='wp_articlecontent']//text()"
+        ).extract()
+        text = [title]
+        for i in des:
+            if i.strip() != "":
+                text.append(i.strip())
+        description = "".join(text)
+        if is_interested(description.lower()) and response.request.url not in URL:
+            # interested
+            URL.append(response.request.url)
+            item['title'] = title
+            item['issued_time'] = response.xpath(
+                "//span[contains(string(),'发布时间')]/text()"
+            ).extract()[0].split(':')[1]
+            item['url'] = response.request.url
+            item['uni'] = 'SCAU'
+            yield item
+
+        # not interested
+        print("title: %s not interested." % title)
+        return

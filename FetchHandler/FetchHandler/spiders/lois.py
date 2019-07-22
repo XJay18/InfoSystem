@@ -1,5 +1,8 @@
 import scrapy
 from ..items import InfoItem
+from ..utils import is_interested
+
+URL = []
 
 
 class LOIS(scrapy.Spider):
@@ -17,14 +20,31 @@ class LOIS(scrapy.Spider):
 
     def parse_dir_contents(self, response):
         item = InfoItem()
-        item['title'] = response.xpath(
+        title = response.xpath(
             "//head//title/text()"
         ).extract()[0].strip()
-        item['title'] = item['title'].replace('----信工所信息安全国家重点实验室', '')
-        # print(item['title'])
-        item['issued_time'] = response.xpath(
-            "//td[contains(string(),'发布时间')]/text()"
-        ).extract()[0].split('：')[1]
-        item['url'] = response.request.url
-        item['uni'] = 'LOIS'
-        yield item
+        title = title.replace('----信工所信息安全国家重点实验室', '')
+        if "学术报告" in title or "学术会议" in title:
+            title = title.replace('学术报告：', '')
+            des = response.xpath(
+                "//div[@class='TRS_Editor']//text()"
+            ).extract()
+            text = [title]
+            for i in des:
+                if i.strip() != "":
+                    text.append(i.strip())
+            description = "".join(text)
+            if is_interested(description.lower()) and response.request.url not in URL:
+                # interested
+                URL.append(response.request.url)
+                item['title'] = title
+                item['issued_time'] = response.xpath(
+                    "//td[contains(string(),'发布时间')]/text()"
+                ).extract()[0].split('：')[1]
+                item['url'] = response.request.url
+                item['uni'] = 'LOIS'
+                yield item
+
+        # not interested
+        print("title: %s not interested." % title)
+        return

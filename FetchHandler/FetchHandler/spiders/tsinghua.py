@@ -1,5 +1,8 @@
 import scrapy
 from ..items import InfoItem
+from ..utils import is_interested
+
+URL = []
 
 
 class TH(scrapy.Spider):
@@ -24,14 +27,31 @@ class TH(scrapy.Spider):
                 continue
             else:
                 content.append(i.strip())
-        item['title'] = content[0]
-        # print(item['title'])
-        item['lecturer'] = content[1]
-        # Because there are not any issued time we can get from the websites,
-        # we assume the issued time is the same as the lecture time.
-        item['issued_time'] = content[2][0:10]
-        item['lecture_time'] = content[2]
-        item['location'] = content[3]
-        item['url'] = response.request.url
-        item['uni'] = 'TSINGHUA'
-        yield item
+
+        # check if the lecture is able to be selected
+        title = content[0]
+        des = response.xpath(
+            "//div[@class='contentss']//text()"
+        ).extract()
+        text = [title]
+        for i in des:
+            if i.strip() != "":
+                text.append(i.strip())
+        description = "".join(text)
+        if is_interested(description.lower()) and response.request.url not in URL:
+            # interested
+            URL.append(response.request.url)
+            item['title'] = title
+            item['lecturer'] = content[1]
+            # Because there are not any issued time we can get from the websites,
+            # we assume the issued time is the same as the lecture time.
+            item['issued_time'] = content[2][0:10]
+            item['lecture_time'] = content[2]
+            item['location'] = content[3]
+            item['url'] = response.request.url
+            item['uni'] = 'TSINGHUA'
+            yield item
+
+        # not interested
+        print("title: %s not interested." % title)
+        return
