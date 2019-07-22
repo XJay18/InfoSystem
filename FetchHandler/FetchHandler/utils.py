@@ -14,7 +14,6 @@ INTERESTED = [
     '密码', 'cryptography',
     '密码学', 'information security',
     '信息安全', 'information safety',
-    '人工智能', '自然语言处理'
 ]
 
 
