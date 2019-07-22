@@ -8,16 +8,16 @@ Database Practical Training Assignment
     - Yu Shi
 
 - Assignment Tasks:
-    - [ ] **Basic Requirements:** crawling the following web site academic report lecture notification.
-        - http://www.scut.edu.cn/sse/
-        - http://www.scut.edu.cn/cs/
-        - https://xxxy2016.jnu.edu.cn/
-        - http://info.scau.edu.cn/news-cate-3.asp
-        - http://eecs.pku.edu.cn/
-        - http://iiis.tsinghua.edu.cn/zh/seminars/
-        - http://sklois.iie.cas.cn/tzgg/tzgg_16520/
-        - http://www.cs.sjtu.edu.cn/NewNotice.aspx
-    - [ ] **Filtering Requirements:** capturing only academic report information related to *information security* and *cryptography*.
+    - [x] **Basic Requirements:** crawling the following web site academic report lecture notification.
+        - http://www2.scut.edu.cn/sse/xshd/list1.htm
+        - http://cs.scut.edu.cn/newcs/xygk/xytz/index.html?_page_=%d1
+        - https://xxxy2016.jnu.edu.cn/Category_37/Index_1.aspx
+        - http://info.scau.edu.cn/3762/list1.htm
+        - http://eecs.pku.edu.cn/xygk1/jzxx1.htm
+        - http://iiis.tsinghua.edu.cn/list-265-1.html
+        - http://sklois.iie.cas.cn/xwzx/xshd/index.html
+        - **http://www.cs.sjtu.edu.cn/NewNotice.aspx** *haven't implemented yet* 
+    - [x] **Filtering Requirements:** capturing only academic report information related to *information security* and *cryptography*.
     - [ ] **Expansion Requirements:** be able to add new web addresses.
     - [ ] **Display Requirements:** 
         - providing the following information:
@@ -28,7 +28,8 @@ Database Practical Training Assignment
         - displaying the latest month's bulletin.
 
 - Modules Used
-    - to be done ...
+    - [Scrapy](https://scrapy.org/)
+    - more ...
     
 - Usage
     - to be done ...
