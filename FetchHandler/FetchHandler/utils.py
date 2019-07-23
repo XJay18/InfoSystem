@@ -3,6 +3,7 @@ import requests
 
 # NLP utils
 XToken = '0Itav5d7.35733.rYTjnGcPDndq'
+# 4xSNgD3j.35782.hq6p1cqjBZ-h
 
 # Baidu access token
 AT = '24.42307f0713b2249c5ace8160b2e39aac.2592000.1566382436.282335-16860975'
