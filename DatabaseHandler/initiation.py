@@ -3,6 +3,7 @@
 # ==============================================================================
 
 import sqlite3
+import json
 
 
 class InfoDB:
@@ -14,6 +15,7 @@ class InfoDB:
         self.conn.close()
 
     def create_table(self):
+        #autoincrement要是integer才可以
         create_statement1 = '''create table Lecture (
             lecture_ID integer primary key autoincrement,
             title text,
@@ -55,12 +57,13 @@ class InfoDB:
         self.cursor.execute(stm,(uni,college_url))
         self.conn.commit()
 
-    def insert_Lecture(self,lecture_ID ,title,issuedDate,holdingDate,place, uni ,url):
+
+    def insert_Lecture(self,title='',issuedDate='',holdingDate='',place='', uni='' ,url=''):
         '向Lecture表插入行'
-        stm='''insert into Lecture values(
-            {},{},{},{},{},{},{}
-            )'''.format(lecture_ID ,title,issuedDate,holdingDate,place, uni ,url)
-        self.cursor.execute(stm)
+        #lecture_ID自增
+        stm='''insert into Lecture(title,issuedDate,holdingDate,place, uni ,url) values(
+            ?,?,?,?,?,?)'''
+        self.cursor.execute(stm,(title,issuedDate,holdingDate,place, uni ,url))
         self.conn.commit()
 
     def insert_Lecturer(self,lecture_ID ,name):
@@ -79,13 +82,32 @@ class InfoDB:
     def getCursor(self):
         return self.cursor
 def test():
+    data=read_json()
+    #打开sqlite
     infodb=InfoDB()
     infodb.openDB()
-    infodb.create_table()
-    infodb.insert_College('Beijing','www.beijing.edu.cn')
-    infodb.insert_College('SCUT','www.scut.edu.cn')
-    infodb.getCursor().execute('select * from College')
-    for i in range(0,2):
-        print(infodb.getCursor().fetchone())
+    #infodb.create_table()
+    #infodb.insert_College('SCUT','www.scut.edu.cn')
+    for item in data:
+        infodb.insert_Lecture(title=item['title'],url=item['url'],issuedDate=item['issuedDate'])
+    for i in infodb.getCursor().execute('select * from Lecture'):
+        print(i)
     infodb.closeDB()
-if __name__=='__main__':test()
+
+
+def read_json():
+    with open(r'E:\Projects\数据库实训-学术讲座爬虫\InfoSystem\FetchHandler\scut.json','r') as json_data:
+        data=json.load(json_data)
+        return data
+            
+# read_json()
+# if __name__=='__main__':test()
+
+info=InfoDB()
+info.openDB()
+data=read_json()
+for item in info.getCursor().execute('select * from Lecture'):
+    print(item)
+
+info.getConn().commit()
+info.closeDB()
