@@ -13,5 +13,8 @@ strings_cn = {
     'url': '通知链接',
     'loc': '举办地点',
     'lecturer': '报告人',
-    'lec_time': '讲座时间'
+    'lec_time': '讲座时间',
+    'lec_title': '报告标题',
+    'default': '不详',
+    'issued_time': '发布时间'
 }

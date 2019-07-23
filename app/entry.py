@@ -65,29 +65,35 @@ for c in range(2):
 
 def inquery(event=None):
     window_inquery = tk.Toplevel(window)
-    window_inquery.geometry('900x200')
     window_inquery.title(str_set['query_result'])
 
-    tree = ttk.Treeview(window_inquery)
-    tree["columns"] = (str_set['lecturer'],
+    tree = ttk.Treeview(window_inquery, show='headings')
+    tree["columns"] = (str_set['lec_title'],
+                       str_set['lecturer'],
                        str_set['lec_time'],
                        str_set['loc'],
                        str_set['uni'],
-                       str_set['url'])
+                       str_set['url'],
+                       str_set['issued_time'])
+    tree.column(str_set['lec_title'], width=300)
     tree.column(str_set['lecturer'], width=100)
     tree.column(str_set['lec_time'], width=100)
     tree.column(str_set['loc'], width=100)
     tree.column(str_set['uni'], width=100)
-    tree.column(str_set['url'], width=300)
+    tree.column(str_set['issued_time'], width=100)
+    tree.column(str_set['url'], width=500)
 
-    tree.heading(str_set['lecturer'], text="报告人")
-    tree.heading(str_set['lec_time'], text="时间")
-    tree.heading(str_set['loc'], text="地点")
-    tree.heading(str_set['uni'], text="大学")
-    tree.heading(str_set['url'], text="通知链接")
-    tree.insert("", 0,
-                text="软工一班年度总结",
-                values=("吴国楷", "10.12", "报告厅", "SCUT", "rgyb.com"))
+    tree.heading(str_set['lec_title'], text=str_set['lec_title'])
+    tree.heading(str_set['lecturer'], text=str_set['lecturer'])
+    tree.heading(str_set['lec_time'], text=str_set['lec_time'])
+    tree.heading(str_set['loc'], text=str_set['loc'])
+    tree.heading(str_set['uni'], text=str_set['uni'])
+    tree.heading(str_set['issued_time'], text=str_set['issued_time'])
+    tree.heading(str_set['url'], text=str_set['url'])
+
+    # TODO: insert record here
+    # ...
+
     tree.pack()
     window_inquery.mainloop()
 
@@ -124,3 +130,15 @@ tk.Button(footFrame,
           font=(fonts_set['YaHei'], 12),
           width=10).grid(row=0, column=1)
 window.mainloop()
+
+
+# utils interface
+def insert_record(treeview, index, dict_record):
+    treeview.insert("", index,
+                    values=(
+                        dict_record.get('lec_title', str_set['default']),
+                        dict_record.get('lecturer', str_set['default']),
+                        dict_record.get('lec_time', str_set['default']),
+                        dict_record.get('loc', str_set['default']),
+                        dict_record.get('uni', str_set['default']),
+                        dict_record.get('url', str_set['default'])))
