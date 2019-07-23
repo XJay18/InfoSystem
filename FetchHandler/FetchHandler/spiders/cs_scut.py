@@ -1,5 +1,8 @@
 import scrapy
 from ..items import InfoItem
+from ..utils import is_interested
+
+URL = []
 
 
 class CS_SCUT(scrapy.Spider):
@@ -24,13 +27,34 @@ class CS_SCUT(scrapy.Spider):
 
     def parse_dir_contents(self, response):
         item = InfoItem()
-        item['title'] = response.xpath(
+
+        # check if the lecture is able to be selected
+        title = response.xpath(
             "//div[@class='NewsTitle']/text()"
         ).extract()[0].strip()
-        # print(item['title'])
-        item['issuedDate'] = response.xpath(
-            "//div[@class='NewsDate']//a[@class='putDate']/text()"
-        ).extract()[0]
-        # print(item['issuedDate'])
-        item['url'] = response.request.url
-        yield item
+        des = response.xpath(
+            "//div[@id='listContainer']//text()"
+        ).extract()
+        text = [title]
+        for i in des:
+            if i.strip() != "":
+                text.append(i.strip())
+        description = "".join(text)
+        if is_interested(description.lower()) and response.request.url not in URL:
+            # interested
+            URL.append(response.request.url)
+            item['title'] = title
+            issued_time = response.xpath(
+                "//div[@class='NewsDate']//a[@class='putDate']/text()"
+            ).extract()[0]
+            issued_time = issued_time.replace('年', '-')
+            issued_time = issued_time.replace('月', '-')
+            item['issued_time'] = issued_time.replace('日', '')
+            # print(item['issuedDate'])
+            item['url'] = response.request.url
+            item['uni'] = 'SCUT'
+            yield item
+
+        # not interested
+        print("title: %s not interested." % title)
+        return

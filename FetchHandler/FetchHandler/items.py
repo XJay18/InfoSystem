@@ -10,9 +10,9 @@ import scrapy
 
 class InfoItem(scrapy.Item):
     title = scrapy.Field()
-    name = scrapy.Field()
-    issuedDate = scrapy.Field()
-    holdingDate = scrapy.Field()
-    place = scrapy.Field()
+    lecturer = scrapy.Field()
+    lecture_time = scrapy.Field()
+    location = scrapy.Field()
     uni = scrapy.Field()
     url = scrapy.Field()
+    issued_time = scrapy.Field()

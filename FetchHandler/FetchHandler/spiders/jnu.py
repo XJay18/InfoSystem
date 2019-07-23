@@ -1,9 +1,12 @@
 import scrapy
 from ..items import InfoItem
+from ..utils import is_interested
+
+URL = []
 
 
 class IF_JNU(scrapy.Spider):
-    name = 'if_jnu'
+    name = 'jnu'
     start_urls = []
     n_pages = 3
 
@@ -22,21 +25,40 @@ class IF_JNU(scrapy.Spider):
             "//div[@class='articleCon']//h2/text()"
         ).extract()[0]
         if "学术讲座" in myfilter:
-            item['title'] = response.xpath(
+
+            # check if the lecture is able to be selected
+            title = response.xpath(
                 "//div[@class='conTxt']//p[1]/text()"
             ).extract()[0]
-            if item['title'] == '\xa0':
-                item['title'] = response.xpath(
+            if title == '\xa0':
+                title = response.xpath(
                     "//h2[@class='title']/text()"
                 ).extract()[0]
-            # print(item['title'])
+            des = response.xpath(
+                "//div[@id='fontzoom']//text()"
+            ).extract()
+            text = [title]
+            for i in des:
+                if i.strip() != "":
+                    text.append(i.strip())
+            description = "".join(text)
+            if is_interested(description.lower()) and response.request.url not in URL:
+                # interested
+                URL.append(response.request.url)
+                item['title'] = title
+                issued_time = response.xpath(
+                    "//div[@class='property']//span[3]/text()"
+                ).extract()[0].split("：")[1]
+                issued_time = issued_time.replace('年', '-')
+                issued_time = issued_time.replace('月', '-')
+                item['issued_time'] = issued_time.replace('日', '')
+                item['url'] = response.request.url
+                item['uni'] = 'JNU'
+                yield item
 
-            item['issuedDate'] = response.xpath(
-                "//div[@class='property']//span[3]/text()"
-            ).extract()[0].split("：")[1]
-            # print(item['issuedDate'])
-
-            item['url'] = response.request.url
-            yield item
+            # not interested
+            print("title: %s not interested." % title)
+            return
         else:
-            pass
+            print("title: %s not about academic lecture." % myfilter)
+            return

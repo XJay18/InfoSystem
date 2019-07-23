@@ -3,32 +3,38 @@ Database Practical Training Assignment
 
 - Assignment Start Date: July 10<sup>th</sup>, 2019
 - Group Members:
-    - Junyi Cao
-    - Guokai Wu
-    - Yu Shi
+
+    Member|Github|Contrib|
+    :---:|:---:|:---:
+    Junyi Cao|[XJay18](https://github.com/XJay18)|Crawl the data from website
+    Guokai Wu|[kyleWu12138](https://github.com/kyleWu12138)|Construction and maintenance of the database
+    Yu Shi|[tsstony](https://github.com/tsstony)|UI support
 
 - Assignment Tasks:
-    - [ ] **Basic Requirements:** crawling the following web site academic report lecture notification.
-        - http://www.scut.edu.cn/sse/
-        - http://www.scut.edu.cn/cs/
-        - https://xxxy2016.jnu.edu.cn/
-        - http://info.scau.edu.cn/news-cate-3.asp
-        - http://eecs.pku.edu.cn/
-        - http://iiis.tsinghua.edu.cn/zh/seminars/
-        - http://sklois.iie.cas.cn/tzgg/tzgg_16520/
+    - [x] **Basic Requirements:** crawling the following web site academic report lecture notification.
+        - http://www2.scut.edu.cn/sse/xshd/list1.htm
+        - http://cs.scut.edu.cn/newcs/xygk/xytz/index.html?_page_=%d1
+        - https://xxxy2016.jnu.edu.cn/Category_37/Index_1.aspx
+        - http://info.scau.edu.cn/3762/list1.htm
+        - http://eecs.pku.edu.cn/xygk1/jzxx1.htm
+        - http://iiis.tsinghua.edu.cn/list-265-1.html
+        - http://sklois.iie.cas.cn/xwzx/xshd/index.html
         - http://www.cs.sjtu.edu.cn/NewNotice.aspx
-    - [ ] **Filtering Requirements:** capturing only academic report information related to *information security* and *cryptography*.
-    - [ ] **Expansion Requirements:** be able to add new web addresses.
+    - [x] **Filtering Requirements:** capturing only academic report information related to *information security* and *cryptography*.
+    - [x] **Expansion Requirements:** be able to add new web addresses.
     - [ ] **Display Requirements:** 
-        - providing the following information:
+        - [ ] providing the following information:
             > Lecture title, presenter, time, place, university, full text notification link
             
              Provide at least 2 ways of time sorting. Sort by holding time. Sort by issued time.
              
-        - displaying the latest month's bulletin.
+        - [ ] displaying the latest month's bulletin.
 
 - Modules Used
-    - to be done ...
+    - [Scrapy](https://scrapy.org/)
+    - [Boson Nlp](https://bosonnlp.com/) API
+    - [Baidu Cloud](https://cloud.baidu.com/) API
+    - more ...
     
 - Usage
     - to be done ...

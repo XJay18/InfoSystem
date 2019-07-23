@@ -5,16 +5,16 @@ from ..utils import is_interested
 URL = []
 
 
-class SE_SCUT(scrapy.Spider):
-    name = 'se_scut'
+class SCAU(scrapy.Spider):
+    name = 'scau'
     start_urls = []
     n_pages = 3
     for i in range(n_pages):
-        start_urls.append("http://www2.scut.edu.cn/sse/xshd/list" + str(i + 1) + ".htm")
+        start_urls.append("http://info.scau.edu.cn/3762/list" + str(i + 1) + ".htm")
 
     def parse(self, response):
-        for href in response.xpath("//ul[contains(@class,'news_ul')]/li[contains(@class,'news_li')]//a//@href"):
-            url = "http://www2.scut.edu.cn" + href.extract()
+        for href in response.xpath("//td[@style='text-align:left']/a/@href"):
+            url = "http://info.scau.edu.cn" + href.extract()
             # print("url: "+url)
             yield scrapy.Request(url, callback=self.parse_dir_contents)
 
@@ -23,21 +23,25 @@ class SE_SCUT(scrapy.Spider):
 
         # check if the lecture is able to be selected
         title = response.xpath(
-            "//div[@class='arti_cont']//h2/text()"
+            "//head//title/text()"
         ).extract()[0].strip()
-        description = response.xpath(
-            "//meta[@name='description']/@content"
-        ).extract()[0].strip()
-        description = "\n".join([title, description])
+        des = response.xpath(
+            "//div[@class='wp_articlecontent']//text()"
+        ).extract()
+        text = [title]
+        for i in des:
+            if i.strip() != "":
+                text.append(i.strip())
+        description = "".join(text)
         if is_interested(description.lower()) and response.request.url not in URL:
             # interested
             URL.append(response.request.url)
             item['title'] = title
             item['issued_time'] = response.xpath(
-                "//span[@class='arti_update']/text()"
-            ).extract()[0].split("：")[1]
+                "//span[contains(string(),'发布时间')]/text()"
+            ).extract()[0].split(':')[1]
             item['url'] = response.request.url
-            item['uni'] = 'SCUT'
+            item['uni'] = 'SCAU'
             yield item
 
         # not interested
