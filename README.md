@@ -6,7 +6,7 @@ Database Practical Training Assignment
 
     Member|Github|Contrib|
     :---:|:---:|:---:
-    Junyi Cao|[XJay18](https://github.com/XJay18)|Crawl the data from website
+    Junyi Cao|[XJay18](https://github.com/XJay18)|Crawl the data from website, UI support
     Guokai Wu|[kyleWu12138](https://github.com/kyleWu12138)|Construction and maintenance of the database
     Yu Shi|[tsstony](https://github.com/tsstony)|UI support
 
@@ -32,6 +32,7 @@ Database Practical Training Assignment
 
 - Modules Used
     - [Scrapy](https://scrapy.org/)
+    - [tkinter](https://docs.python.org/3/library/tkinter.html#)
     - [Boson Nlp](https://bosonnlp.com/) API
     - [Baidu Cloud](https://cloud.baidu.com/) API
     - more ...
