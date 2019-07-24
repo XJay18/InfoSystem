@@ -64,7 +64,7 @@ FEED_EXPORT_ENCODING = "gb18030"
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'FetchHandler.pipelines.FetchhandlerPipeline': 300,
+    'FetchHandler.pipelines.FetchhandlerPipeline': 300
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

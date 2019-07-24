@@ -7,50 +7,18 @@ import json
 
 
 class InfoDB:
-    def openDB(self):
-        self.conn = sqlite3.connect('info_database.sqlite')
+    def openDB(self,path=''):
+        if path:
+            self.conn = sqlite3.connect(path+'/'+'info_database.sqlite')
+        else:
+            self.conn = sqlite3.connect('info_database.sqlite')
         self.cursor = self.conn.cursor()
+
 
     def closeDB(self):
         self.conn.close()
 
-    def create_table(self):
-        #autoincrement要是integer才可以
-        create_statement1 = '''create table Lecture (
-            lecture_ID integer primary key autoincrement,
-            title text,
-            issuedDate text,
-            holdingDate text,
-            place text,
-            uni text,
-            url text,
-            foreign key (uni) references College(uni)
-        )'''
-        create_statement2 = '''create table Lecturer(
-            lecture_ID int,
-            name text,
-            primary key(lecture_ID,name),
-            foreign key (lecture_ID) references Lecture(lecture_ID)
-        ) 
-        '''
-        create_statement3 = '''create table College(
-            uni text primary key,
-            college_url text
-        )
-        '''
-        create_statement4 = '''create table User(
-            user_name text primary key,
-            user_pwd text
-        )
-        '''
-
-        self.cursor.execute(create_statement1)
-        self.cursor.execute(create_statement2)
-        self.cursor.execute(create_statement3)
-        self.cursor.execute(create_statement4)
-        self.conn.commit()
-
-
+   
     def insert_College(self,uni,college_url):
         '向College表插入行'
         stm='''insert into College values(?,?)'''
@@ -81,33 +49,75 @@ class InfoDB:
         return self.conn
     def getCursor(self):
         return self.cursor
-def test():
-    data=read_json()
-    #打开sqlite
+# def test():
+#     data=read_json()
+#     #打开sqlite
+#     infodb=InfoDB()
+#     infodb.openDB()
+#     #infodb.create_table()
+#     #infodb.insert_College('SCUT','www.scut.edu.cn')
+#     for item in data:
+#         infodb.insert_Lecture(title=item['title'],url=item['url'],issuedDate=item['issuedDate'])
+#     for i in infodb.getCursor().execute('select * from Lecture'):
+#         print(i)
+#     infodb.closeDB()
+
+
+# def read_json():
+#     with open(r'E:\Projects\数据库实训-学术讲座爬虫\InfoSystem\FetchHandler\scut.json','r') as json_data:
+#         data=json.load(json_data)
+#         return data
+
+def AddCollege():
     infodb=InfoDB()
     infodb.openDB()
-    #infodb.create_table()
-    #infodb.insert_College('SCUT','www.scut.edu.cn')
-    for item in data:
-        infodb.insert_Lecture(title=item['title'],url=item['url'],issuedDate=item['issuedDate'])
-    for i in infodb.getCursor().execute('select * from Lecture'):
-        print(i)
-    infodb.closeDB()
 
+    College_name=['SCUT','JUN','LOIS','PKU','SCAU','SJTU','TSINGHUA']
+    College_url=['','','','','','','']
 
-def read_json():
-    with open(r'E:\Projects\数据库实训-学术讲座爬虫\InfoSystem\FetchHandler\scut.json','r') as json_data:
-        data=json.load(json_data)
-        return data
-            
-# read_json()
-# if __name__=='__main__':test()
+    db_names=infodb.getCursor().execute('select * from College')
 
-info=InfoDB()
-info.openDB()
-data=read_json()
-for item in info.getCursor().execute('select * from Lecture'):
-    print(item)
+    for name,url in zip(College_name,College_url):
+        if (name,url) not in db_names:
+            infodb.insert_College(name,url) 
+    infodb.closeDB()            
 
-info.getConn().commit()
-info.closeDB()
+def create_table():
+        infodb=InfoDB()
+        infodb.openDB()
+        #autoincrement要是integer才可以
+        create_statement1 = '''create table if not exists Lecture (
+            lecture_ID integer primary key autoincrement,
+            title text,
+            issuedDate text,
+            holdingDate text,
+            place text,
+            uni text,
+            url text,
+            foreign key (uni) references College(uni)
+        )'''
+        create_statement2 = '''create table if not exists Lecturer(
+            lecture_ID integer,
+            name text,
+            primary key(lecture_ID,name),
+            foreign key (lecture_ID) references Lecture(lecture_ID)
+        ) 
+        '''
+        create_statement3 = '''create table if not exists College(
+            uni text primary key,
+            college_url text
+        )
+        '''
+        create_statement4 = '''create table if not exists User(
+            user_name text primary key,
+            user_pwd text
+        )
+        '''
+        infodb.getCursor().execute(create_statement1)
+        infodb.getCursor().execute(create_statement2)
+        infodb.getCursor().execute(create_statement3)
+        infodb.getCursor().execute(create_statement4)
+        infodb.getConn().commit()
+
+create_table()
+AddCollege()
