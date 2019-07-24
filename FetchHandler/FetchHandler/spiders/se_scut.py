@@ -43,14 +43,14 @@ class SE_SCUT(scrapy.Spider):
         # not interested
         print("title: %s not interested." % title)
         
-        # 作为数据库的测试
-        URL.append(response.request.url)
-        item['title'] = title
-        item['issued_time'] = response.xpath(
-            "//span[@class='arti_update']/text()"
-        ).extract()[0].split("：")[1]
-        item['url'] = response.request.url
-        item['uni'] = 'SCUT'
-        yield item
-        # # 
+        # # 作为数据库的测试
+        # URL.append(response.request.url)
+        # item['title'] = title
+        # item['issued_time'] = response.xpath(
+        #     "//span[@class='arti_update']/text()"
+        # ).extract()[0].split("：")[1]
+        # item['url'] = response.request.url
+        # item['uni'] = 'SCUT'
+        # yield item
+        # # # 
         return

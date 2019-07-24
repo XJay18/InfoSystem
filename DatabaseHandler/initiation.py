@@ -4,21 +4,21 @@
 
 import sqlite3
 import json
-
+import os
 
 class InfoDB:
     def openDB(self,path=''):
         if path:
+            print('if path')
             self.conn = sqlite3.connect(path+'/'+'info_database.sqlite')
         else:
-            self.conn = sqlite3.connect('info_database.sqlite')
+            print('else path')
+            self.conn = sqlite3.connect(os.path.dirname(__file__)+'/info_database.sqlite')
         self.cursor = self.conn.cursor()
-
 
     def closeDB(self):
         self.conn.close()
 
-   
     def insert_College(self,uni,college_url):
         '向College表插入行'
         stm='''insert into College values(?,?)'''
@@ -45,6 +45,25 @@ class InfoDB:
             {},{})'''.format(user_name,user_pwd)
         self.cursor.execute(stm)
         self.conn.commit()
+
+    def get_Lecture_Datalist(self):
+        result=list(self.cursor.execute('select * from Lecture'))
+        return result
+
+    def get_Lecture_Datadict(self):
+        datalist = self.get_Lecture_Datalist()
+        list_of_dict=[]
+        index_dict={0:'Lecture_ID',1:'title',2:'issuedtime',\
+        3:'holdingDate',4:'place',5:'uni',6:'url'}
+        for row in datalist:
+            element_of_list={}
+            i=0
+            for element in row:
+                if element:element_of_list[index_dict[i]]=element
+                i+=1
+            list_of_dict.append(element_of_list)    
+        return list_of_dict
+
     def getConn(self):
         return self.conn
     def getCursor(self):

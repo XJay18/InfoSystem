@@ -4,7 +4,9 @@ from initiation import InfoDB
 
 
 infodb=InfoDB()
-infodb.openDB('E:\Projects\数据库实训-学术讲座爬虫\InfoSystem\FetchHandler\FetchHandler\spiders')
-for item in infodb.getCursor().execute('select * from Lecture'):   
-    print(item)
+infodb.openDB()
+print('ok')
+# for item in infodb.getCursor().execute('select * from Lecture'):   
+#     print(item)
+print(infodb.get_Lecture_Datadict())
 infodb.closeDB()
