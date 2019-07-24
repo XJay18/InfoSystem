@@ -16,3 +16,4 @@ class InfoItem(scrapy.Item):
     uni = scrapy.Field()
     url = scrapy.Field()
     issued_time = scrapy.Field()
+    description = scrapy.Field()

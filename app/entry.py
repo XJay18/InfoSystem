@@ -1,0 +1,144 @@
+import tkinter as tk
+from tkinter import ttk
+from InfoSystem.app.res.string import strings_cn as str_set
+from InfoSystem.app.res.font import fonts_cn as fonts_set
+
+window = tk.Tk()
+window.title(str_set['win_title'])
+window.geometry('800x400')
+
+label = tk.Label(window,
+                 text=str_set['win_title'],
+                 font=(fonts_set['YaHeiB'], 20),
+                 width=30, height=2)
+label.pack(pady=10)
+
+mainFrame = tk.Frame(window)
+mainFrame.pack()
+
+# query start time
+tk.Label(mainFrame,
+         text=str_set['time_start'],
+         font=(fonts_set['YaHei'], 14),
+         width=15, height=2).grid(row=0, column=0)
+et_time_start = tk.Entry(
+    mainFrame, bd='3',
+    font=(fonts_set['YaHei'], 12),
+    relief='sunken').grid(row=0, column=1)
+
+# query end time
+tk.Label(mainFrame,
+         text=str_set['time_end'],
+         font=(fonts_set['YaHei'], 14),
+         width=15, height=2).grid(row=1, column=0)
+et_time_end = tk.Entry(
+    mainFrame, bd='3',
+    font=(fonts_set['YaHei'], 12),
+    relief='sunken').grid(row=1, column=1)
+
+# query uni
+tk.Label(mainFrame,
+         text=str_set['uni'],
+         font=(fonts_set['YaHei'], 14),
+         width=15, height=2).grid(row=2, column=0)
+et_uni = tk.Entry(
+    mainFrame, bd='3',
+    font=(fonts_set['YaHei'], 12),
+    relief='sunken').grid(row=2, column=1)
+
+# query keywords
+tk.Label(mainFrame,
+         text=str_set['klist'],
+         font=(fonts_set['YaHei'], 12),
+         width=15, height=2).grid(row=0, column=3, columnspan=2)
+klistFrame = tk.Frame(mainFrame)
+klistFrame.grid(row=1, rowspan=2, column=3, columnspan=2, padx=10)
+et_keyword = []
+for c in range(2):
+    for r in range(3):
+        et = tk.Entry(klistFrame,
+                      font=(fonts_set['YaHei'], 12),
+                      width=20)
+        et_keyword.append(et)
+        et.grid(row=r, column=c, padx=5, pady=2)
+
+
+def inquery(event=None):
+    window_inquery = tk.Toplevel(window)
+    window_inquery.title(str_set['query_result'])
+
+    tree = ttk.Treeview(window_inquery, show='headings')
+    tree["columns"] = (str_set['lec_title'],
+                       str_set['lecturer'],
+                       str_set['lec_time'],
+                       str_set['loc'],
+                       str_set['uni'],
+                       str_set['url'],
+                       str_set['issued_time'])
+    tree.column(str_set['lec_title'], width=300)
+    tree.column(str_set['lecturer'], width=100)
+    tree.column(str_set['lec_time'], width=100)
+    tree.column(str_set['loc'], width=100)
+    tree.column(str_set['uni'], width=100)
+    tree.column(str_set['issued_time'], width=100)
+    tree.column(str_set['url'], width=500)
+
+    tree.heading(str_set['lec_title'], text=str_set['lec_title'])
+    tree.heading(str_set['lecturer'], text=str_set['lecturer'])
+    tree.heading(str_set['lec_time'], text=str_set['lec_time'])
+    tree.heading(str_set['loc'], text=str_set['loc'])
+    tree.heading(str_set['uni'], text=str_set['uni'])
+    tree.heading(str_set['issued_time'], text=str_set['issued_time'])
+    tree.heading(str_set['url'], text=str_set['url'])
+
+    # TODO: insert record here
+    # ...
+
+    tree.pack()
+    window_inquery.mainloop()
+
+
+bottomFrame = tk.Frame(window)
+bottomFrame.pack()
+
+# btn setting
+tk.Button(bottomFrame,
+          text=str_set['setting'],
+          font=(fonts_set['YaHei'], 12),
+          width=10).grid(row=0, column=0, padx=50)
+# btn query
+btn_query = tk.Button(bottomFrame,
+                      text=str_set['query'],
+                      font=(fonts_set['YaHeiB'], 12),
+                      command=inquery,
+                      width=10)
+
+# hot key for query
+btn_query.bind_all("q", inquery)
+btn_query.grid(row=0, column=1, padx=50)
+
+footFrame = tk.Frame(window)
+footFrame.pack(side='bottom', pady=10)
+# version
+tk.Label(footFrame,
+         text=str_set['version'] + str_set['curr_ver'],
+         font=(fonts_set['YaHei'], 12),
+         width=15, height=2).grid(row=0, column=0)
+# about
+tk.Button(footFrame,
+          text=str_set['about'],
+          font=(fonts_set['YaHei'], 12),
+          width=10).grid(row=0, column=1)
+window.mainloop()
+
+
+# utils interface
+def insert_record(treeview, index, dict_record):
+    treeview.insert("", index,
+                    values=(
+                        dict_record.get('lec_title', str_set['default']),
+                        dict_record.get('lecturer', str_set['default']),
+                        dict_record.get('lec_time', str_set['default']),
+                        dict_record.get('loc', str_set['default']),
+                        dict_record.get('uni', str_set['default']),
+                        dict_record.get('url', str_set['default'])))
