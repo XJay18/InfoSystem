@@ -11,19 +11,19 @@ class CS_SCUT(scrapy.Spider):
     n_pages = 3
     for i in range(n_pages):
         start_urls.append(
-            "http://cs.scut.edu.cn/newcs/xygk/xytz/index.html?_page_=%d" % (i + 1)
+            "http://cs.scut.edu.cn/newcs/xygk/xytz/index.html" +
+            "?__active_paging__=listContainer&_page_=" + str(i + 1) +
+            "&__active_region__=pageregion&_size_=15&_=1564021742384"
         )
 
     def parse(self, response):
         for href in response.xpath("//a[@class='LTitle']/@href"):
-            if "https://" not in href.extract():
+            if "http://" not in href.extract() and "https://" not in href.extract():
                 url = "http://cs.scut.edu.cn" + href.extract()
                 yield scrapy.Request(url, callback=self.parse_dir_contents)
-
             # not in school of cs
             else:
-                pass
-            # print("url: " + url)
+                return
 
     def parse_dir_contents(self, response):
         item = InfoItem()

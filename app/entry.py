@@ -1,7 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog as dialog
+
+import json
+import csv
 from InfoSystem.app.res.string import strings_cn as str_set
 from InfoSystem.app.res.font import fonts_cn as fonts_set
+from InfoSystem.DatabaseHandler.initiation import InfoDB
+
+infodb = InfoDB()
+infodb.openDB()
 
 window = tk.Tk()
 window.title(str_set['win_title'])
@@ -63,11 +71,43 @@ for c in range(2):
         et.grid(row=r, column=c, padx=5, pady=2)
 
 
+# utils interface
+def insert_record(treeview, index, dict_record):
+    treeview.insert("", index,
+                    values=(
+                        dict_record.get('lec_title', str_set['default']),
+                        dict_record.get('lecturer', str_set['default']),
+                        dict_record.get('lec_time', str_set['default']),
+                        dict_record.get('loc', str_set['default']),
+                        dict_record.get('uni', str_set['default']),
+                        dict_record.get('url', str_set['default']),
+                        dict_record.get('issued_time', str_set['default'])))
+
+
+def save_json(dict_info):
+    fname = dialog.asksaveasfilename(initialfile=str_set['query_result'],
+                                     defaultextension='.json')
+    with open(fname, 'w', encoding='GBK')as f:
+        json.dump(dict_info, f, ensure_ascii=False)
+    return
+
+
+def save_csv(dict_info):
+    fname = dialog.asksaveasfilename(initialfile=str_set['query_result'],
+                                     defaultextension='.csv')
+    with open(fname, 'w')as f:
+        fcsv = csv.DictWriter(f, dict_info[1])
+        fcsv.writeheader()
+        fcsv.writerows(dict_info[0])
+    return
+
+
 def inquery(event=None):
     window_inquery = tk.Toplevel(window)
     window_inquery.title(str_set['query_result'])
-
-    tree = ttk.Treeview(window_inquery, show='headings')
+    inqueryMenu = tk.Menu(window_inquery)
+    resultMenu = tk.Menu(inqueryMenu, tearoff=0)
+    tree = ttk.Treeview(window_inquery, show='headings', height=20)
     tree["columns"] = (str_set['lec_title'],
                        str_set['lecturer'],
                        str_set['lec_time'],
@@ -75,13 +115,13 @@ def inquery(event=None):
                        str_set['uni'],
                        str_set['url'],
                        str_set['issued_time'])
-    tree.column(str_set['lec_title'], width=300)
-    tree.column(str_set['lecturer'], width=100)
-    tree.column(str_set['lec_time'], width=100)
+    tree.column(str_set['lec_title'], width=600)
+    tree.column(str_set['lecturer'], width=80)
+    tree.column(str_set['lec_time'], width=80)
     tree.column(str_set['loc'], width=100)
-    tree.column(str_set['uni'], width=100)
-    tree.column(str_set['issued_time'], width=100)
-    tree.column(str_set['url'], width=500)
+    tree.column(str_set['uni'], width=80)
+    tree.column(str_set['issued_time'], width=80)
+    tree.column(str_set['url'], width=400)
 
     tree.heading(str_set['lec_title'], text=str_set['lec_title'])
     tree.heading(str_set['lecturer'], text=str_set['lecturer'])
@@ -91,11 +131,25 @@ def inquery(event=None):
     tree.heading(str_set['issued_time'], text=str_set['issued_time'])
     tree.heading(str_set['url'], text=str_set['url'])
 
-    # TODO: insert record here
-    # ...
-
+    dict_info, dict_keys = infodb.get_Lecture_Datadict()
+    dict_len = len(dict_info)
+    for i in range(dict_len):
+        insert_record(tree, i, dict_info[i])
+    inqueryMenu.add_cascade(label=str_set['get'], menu=resultMenu)
+    resultMenu.add_command(label=str_set['get_json'], command=lambda: save_json(dict_info))
+    resultMenu.add_command(label=str_set['get_csv'], command=lambda: save_csv((dict_info, dict_keys)))
     tree.pack()
+    window_inquery.config(menu=inqueryMenu)
     window_inquery.mainloop()
+
+
+def about():
+    window_about = tk.Toplevel(window)
+    window_about.title(str_set['about'])
+    about = tk.PhotoImage(file='./res/about.png')
+    lb_about = tk.Label(window_about, image=about)
+    lb_about.pack()
+    window_about.mainloop()
 
 
 bottomFrame = tk.Frame(window)
@@ -115,6 +169,7 @@ btn_query = tk.Button(bottomFrame,
 
 # hot key for query
 btn_query.bind_all("q", inquery)
+btn_query.bind_all("Q", inquery)
 btn_query.grid(row=0, column=1, padx=50)
 
 footFrame = tk.Frame(window)
@@ -128,17 +183,7 @@ tk.Label(footFrame,
 tk.Button(footFrame,
           text=str_set['about'],
           font=(fonts_set['YaHei'], 12),
+          command=about,
           width=10).grid(row=0, column=1)
 window.mainloop()
-
-
-# utils interface
-def insert_record(treeview, index, dict_record):
-    treeview.insert("", index,
-                    values=(
-                        dict_record.get('lec_title', str_set['default']),
-                        dict_record.get('lecturer', str_set['default']),
-                        dict_record.get('lec_time', str_set['default']),
-                        dict_record.get('loc', str_set['default']),
-                        dict_record.get('uni', str_set['default']),
-                        dict_record.get('url', str_set['default'])))
+infodb.closeDB()

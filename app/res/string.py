@@ -16,5 +16,8 @@ strings_cn = {
     'lec_time': '讲座时间',
     'lec_title': '报告标题',
     'default': '不详',
-    'issued_time': '发布时间'
+    'issued_time': '发布时间',
+    'get': '导出',
+    'get_json': 'json文件',
+    'get_csv': 'csv文件'
 }
