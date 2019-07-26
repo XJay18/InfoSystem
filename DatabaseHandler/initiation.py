@@ -26,12 +26,18 @@ class InfoDB:
         self.cursor.execute(stm, (uni, college_url))
         self.conn.commit()
 
-    def insert_Lecture(self, title='', issuedDate='', holdingDate='', place='', uni='', url=''):
+    def insert_Lecture(self, item):
         '向Lecture表插入行'
         # lecture_ID自增
-        stm = '''insert into Lecture(title,issuedDate,holdingDate,place, uni ,url) values(
+        stm = '''insert into Lecture(title, issuedDate, holdingDate, place, uni ,url) values(
             ?,?,?,?,?,?)'''
-        self.cursor.execute(stm, (title, issuedDate, holdingDate, place, uni, url))
+        self.cursor.execute(stm,
+                            (item.get('title', ''),
+                             item.get('issuedDate', ''),
+                             item.get('holdingDate', ''),
+                             item.get('place', ''),
+                             item.get('uni', ''),
+                             item.get('url', '')))
         self.conn.commit()
 
     def insert_Lecturer(self, lecture_ID, name):

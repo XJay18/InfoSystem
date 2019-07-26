@@ -1,7 +1,7 @@
 import scrapy
 import time
 from ..items import InfoItem
-from ..utils import is_interested, convert_img
+from ..utils import convert_img
 
 URL = []
 STATE = "/wEPDwUKMTMxMDcwNDI3OQ9kFgICAQ9kFgQCAQ8PFgIeC1JlY29yZGNvdW" \
@@ -73,9 +73,7 @@ class SJTU(scrapy.Spider):
                 print("\n###Trouble in converting this lecture news: %s \n" % title)
                 return
 
-        # check if the lecture is able to be selected
-        if is_interested(description.lower()) and response.request.url not in URL:
-            # interested
+        if response.request.url not in URL:
             URL.append(response.request.url)
             item['title'] = title
             item['title'] = title
@@ -84,8 +82,6 @@ class SJTU(scrapy.Spider):
             ).extract()[0].strip()[5:]
             item['url'] = response.request.url
             item['uni'] = 'SJTU'
+            item['description'] = description
             yield item
-
-        # not interested
-        print("title: %s not interested." % title)
         return

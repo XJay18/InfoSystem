@@ -16,8 +16,7 @@ from DatabaseHandler.initiation import InfoDB
 class FetchhandlerPipeline(object):
     def process_item(self, item, spider):
         print('process_test')
-        self.infodb.insert_Lecture(title=item['title'], url=item['url'], issuedDate=item['issued_time'],
-                                   uni=item['uni'], holdingDate=item['lecture_time'], place=item['location'])
+        self.infodb.insert_Lecture(item)
         return item
 
     def open_spider(self, spider):

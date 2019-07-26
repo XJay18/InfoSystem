@@ -1,6 +1,5 @@
 import scrapy
 from ..items import InfoItem
-from ..utils import is_interested
 
 URL = []
 
@@ -32,8 +31,6 @@ class PKU(scrapy.Spider):
 
     def parse_dir_contents(self, response):
         item = InfoItem()
-
-        # check if the lecture is able to be selected
         title = response.xpath(
             "//head//title/text()"
         ).extract()[0].strip().split("-")[0]
@@ -45,8 +42,7 @@ class PKU(scrapy.Spider):
             if i.strip() != "":
                 text.append(i.strip())
         description = "".join(text)
-        if is_interested(description.lower()) and response.request.url not in URL:
-            # interested
+        if response.request.url not in URL:
             URL.append(response.request.url)
             item['title'] = title
             item['issued_time'] = response.xpath(
@@ -54,8 +50,6 @@ class PKU(scrapy.Spider):
             ).extract()[0].split('：')[1]
             item['url'] = response.request.url
             item['uni'] = 'PKU'
+            item['description'] = description
             yield item
-
-        # not interested
-        print("title: %s not interested." % title)
         return
