@@ -23,10 +23,10 @@ Database Practical Training Assignment
     - [x] **Filtering Requirements:** capturing only academic report information related to *information security* and *cryptography*.
     - [x] **Expansion Requirements:** be able to add new web addresses.
     - [ ] **Display Requirements:** 
-        - [ ] providing the following information:
+        - [x] providing the following information:
             > Lecture title, presenter, time, place, university, full text notification link
             
-             Provide at least 2 ways of time sorting. Sort by holding time. Sort by issued time.
+        - [ ] providing at least 2 ways of time sorting. Sort by holding time. Sort by issued time.
              
         - [ ] displaying the latest month's bulletin.
 
