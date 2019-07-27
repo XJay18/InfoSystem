@@ -1,6 +1,5 @@
 import scrapy
 from ..items import InfoItem
-from ..utils import is_interested
 
 URL = []
 

@@ -1,5 +1,6 @@
 import scrapy
 from ..items import InfoItem
+import re
 
 URL = []
 
@@ -33,9 +34,22 @@ class SCAU(scrapy.Spider):
         if response.request.url not in URL:
             URL.append(response.request.url)
             item['title'] = title
+            # find the lecturer via regular expression
+            item['lecturer'] = []
+            lecturer = re.findall("报告人(.*?)时.?间", description)
+            if len(lecturer) != 0:
+                item['lecturer'].append(lecturer[0].replace(":", "").replace("：", ""))
+            # find the lecture time via regular expression
+            lec_time = re.findall("(20.*?)地.?点", description)
+            if len(lec_time) != 0:
+                item['lecutre_time'] = lec_time[0]
             item['issued_time'] = response.xpath(
                 "//span[contains(string(),'发布时间')]/text()"
             ).extract()[0].split(':')[1]
+            # find the location via regular expression
+            loc = re.findall("地.?点(.*?)联系人", description)
+            if len(loc) != 0:
+                item['location'] = loc[0].replace(":", "").replace("：", "")
             item['url'] = response.request.url
             item['uni'] = 'SCAU'
             item['description'] = description

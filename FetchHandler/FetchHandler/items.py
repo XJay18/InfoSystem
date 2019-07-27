@@ -10,7 +10,7 @@ import scrapy
 
 class InfoItem(scrapy.Item):
     title = scrapy.Field()
-    lecturer = scrapy.Field()
+    lecturer = scrapy.Field()  # list object
     lecture_time = scrapy.Field()
     location = scrapy.Field()
     uni = scrapy.Field()

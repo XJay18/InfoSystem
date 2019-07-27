@@ -42,12 +42,28 @@ class IF_JNU(scrapy.Spider):
             if response.request.url not in URL:
                 URL.append(response.request.url)
                 item['title'] = title
+                lecturers = response.xpath(
+                    "//p[contains(string(),'报告人：')]/text()"
+                ).extract()
+                item['lecturer'] = []
+                for lecturer in lecturers:
+                    item['lecturer'].append(lecturer.strip())
+                lec_time = response.xpath(
+                    "//p[contains(string(),'时') and contains(string(),'间：')]/text()"
+                ).extract()
+                if len(lec_time) != 0:
+                    item['lecture_time'] = lec_time[0].strip().replace("始", "")
                 issued_time = response.xpath(
                     "//div[@class='property']//span[3]/text()"
                 ).extract()[0].split("：")[1]
                 issued_time = issued_time.replace('年', '-')
                 issued_time = issued_time.replace('月', '-')
                 item['issued_time'] = issued_time.replace('日', '')
+                loc = response.xpath(
+                    "//p[contains(string(),'地') and contains(string(),'点：')]/text()"
+                ).extract()
+                if len(loc) != 0:
+                    item['location'] = loc[0].strip()
                 item['url'] = response.request.url
                 item['uni'] = 'JNU'
                 item['description'] = description
