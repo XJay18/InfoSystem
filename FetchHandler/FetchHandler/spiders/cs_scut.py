@@ -1,5 +1,6 @@
 import scrapy
 from ..items import InfoItem
+import re
 
 URL = []
 
@@ -29,6 +30,8 @@ class CS_SCUT(scrapy.Spider):
         title = response.xpath(
             "//div[@class='NewsTitle']/text()"
         ).extract()[0].strip()
+        if "报告会" not in title:
+            return
         des = response.xpath(
             "//div[@id='listContainer']//text()"
         ).extract()
@@ -40,13 +43,32 @@ class CS_SCUT(scrapy.Spider):
         if response.request.url not in URL:
             URL.append(response.request.url)
             item['title'] = title
+            # find the lecturer via regular expression
+            item['lecturer'] = []
+            lecturer = re.findall("报.?告.?人：(.*?)报告", description)
+            if len(lecturer) != 0:
+                item['lecturer'].append(lecturer[0])
+            lec_time = response.xpath(
+                "//p[contains(string(),'时间')]/text()"
+            ).extract()
+            if len(lec_time) != 0:
+                item['lecture_time'] = lec_time[0].strip().replace("报告时间：", "")
             issued_time = response.xpath(
                 "//div[@class='NewsDate']//a[@class='putDate']/text()"
             ).extract()[0]
             issued_time = issued_time.replace('年', '-')
             issued_time = issued_time.replace('月', '-')
             item['issued_time'] = issued_time.replace('日', '')
-            # print(item['issuedDate'])
+            loc = response.xpath(
+                "//p[contains(string(),'地点')]/text()"
+            ).extract()
+            if len(loc) != 0:
+                for i in loc:
+                    if i.strip() == "":
+                        continue
+                    else:
+                        item['location'] = i.strip().replace("报告地点：", "")
+                        break
             item['url'] = response.request.url
             item['uni'] = 'SCUT'
             item['description'] = description

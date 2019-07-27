@@ -63,3 +63,20 @@ def convert_img(url):
         return description
     else:
         return False
+
+
+def get_lecturer_nlp(des):
+    s = [des]
+    data = json.dumps(s)
+    headers = {
+        'X-Token': XToken,
+        'Content-Type': 'application/json'
+    }
+    resp = requests.post(NER_URL, headers=headers, data=data.encode('utf-8'))
+    try:
+        for item in resp.json():
+            for entity in item['entity']:
+                if entity[2] == 'person_name':
+                    return ''.join(item['word'][entity[0]:entity[1]])
+    except:
+        return False

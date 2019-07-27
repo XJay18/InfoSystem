@@ -39,22 +39,22 @@ class LOIS(scrapy.Spider):
                 item['title'] = title
                 # find the lecturer via regular expression
                 item['lecturer'] = []
-                lecturer = re.findall("报告人：(.*?)时间", description)[0]
-                if lecturer != '':
-                    item['lecturer'].append(lecturer.replace('报告', ''))
-                elif re.findall("Speaker:(.*?)Time", description)[0] != '':
+                lecturer = re.findall("报告人：(.*?)时间", description)
+                if len(lecturer) != 0:
+                    item['lecturer'].append(lecturer[0].replace('报告', ''))
+                elif len(re.findall("Speaker:(.*?)Time", description)) != 0:
                     item['lecturer'].append(re.findall("Speaker:(.*?)Time", description)[0])
                 # find the lecture time via regular expression
-                lec_time = re.findall("时间：(.*?)地点", description)[0]
-                if lec_time != '':
-                    item['lecture_time'] = lec_time.replace('报告', '')
+                lec_time = re.findall("时间：(.*?)地点", description)
+                if len(lec_time) != 0:
+                    item['lecture_time'] = lec_time[0].replace('报告', '')
                 item['issued_time'] = response.xpath(
                     "//td[contains(string(),'发布时间')]/text()"
                 ).extract()[0].split('：')[1]
                 # find the location via regular expression
-                loc = re.findall("地点：(.*?室)", description)[0]
-                if loc != '':
-                    item['location'] = loc
+                loc = re.findall("地点：(.*?室)", description)
+                if len(loc) != 0:
+                    item['location'] = loc[0]
                 item['url'] = response.request.url
                 item['uni'] = 'LOIS'
                 item['description'] = description

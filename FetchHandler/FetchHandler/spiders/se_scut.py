@@ -1,5 +1,7 @@
 import scrapy
 from ..items import InfoItem
+from ..utils import get_lecturer_nlp
+import re
 
 URL = []
 
@@ -22,6 +24,8 @@ class SE_SCUT(scrapy.Spider):
         title = response.xpath(
             "//div[@class='arti_cont']//h2/text()"
         ).extract()[0].strip()
+        if "报告会" not in title:
+            return
         description = response.xpath(
             "//meta[@name='description']/@content"
         ).extract()[0].strip()
@@ -29,9 +33,25 @@ class SE_SCUT(scrapy.Spider):
         if response.request.url not in URL:
             URL.append(response.request.url)
             item['title'] = title
+            item['lecturer'] = []
+            lecturer = get_lecturer_nlp(title)
+            if lecturer:
+                item['lecturer'].append(lecturer)
+            lec_time = re.findall("报告时间：(.*?)报告", description)
+            if len(lec_time) != 0:
+                item['lecture_time'] = lec_time[0]
             item['issued_time'] = response.xpath(
                 "//span[@class='arti_update']/text()"
             ).extract()[0].split("：")[1]
+            loc = re.findall("地点：(.*?厅)", description)
+            if len(loc) != 0:
+                item['location'] = loc[0]
+            elif len(re.findall("地点：(.*?室)", description)) != 0:
+                item['location'] = re.findall("地点：(.*?)室", description)[0]
+            elif len(re.findall("地点：(.*?)报告时间", description)) != 0:
+                item['location'] = re.findall("地点：(.*?)报告时间", description)[0]
+            elif len(re.findall("地点：(.*?)欢迎", description)) != 0:
+                item['location'] = re.findall("地点：(.*?)欢迎", description)[0]
             item['url'] = response.request.url
             item['uni'] = 'SCUT'
             item['description'] = description
