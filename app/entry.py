@@ -2,14 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog as dialog
 
+import requests
 import json
 import csv
 from InfoSystem.app.res.string import strings_cn as str_set
 from InfoSystem.app.res.font import fonts_cn as fonts_set
-from InfoSystem.DatabaseHandler.initiation import InfoDB
-
-infodb = InfoDB()
-infodb.openDB()
 
 window = tk.Tk()
 window.title(str_set['win_title'])
@@ -131,7 +128,9 @@ def inquery(event=None):
     tree.heading(str_set['issued_time'], text=str_set['issued_time'])
     tree.heading(str_set['url'], text=str_set['url'])
 
-    dict_info, dict_keys = infodb.get_Lecture_Datadict()
+    resp = requests.get("http://localhost:5000/api/getInfo")
+    dict_info = resp.json()['data']
+    dict_keys = resp.json()['keys']
     dict_len = len(dict_info)
     for i in range(dict_len):
         insert_record(tree, i, dict_info[i])
@@ -186,4 +185,3 @@ tk.Button(footFrame,
           command=about,
           width=10).grid(row=0, column=1)
 window.mainloop()
-infodb.closeDB()

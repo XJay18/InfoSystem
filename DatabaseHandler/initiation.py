@@ -24,26 +24,26 @@ class InfoDB:
     def closeDB(self):
         self.conn.close()
 
-    def insert_University(self, uni,uni_url):
+    def insert_University(self, uni, uni_url):
         '向College表插入行'
         stm = '''insert into University values(?,?)'''
         self.cursor.execute(stm, (uni, uni_url))
         self.conn.commit()
 
-    def insert_Lecture(self, title,lecturer,issued_time,lecture_time,location,uni,url,description):
+    def insert_Lecture(self, title, lecturer, issued_time, lecture_time, location, uni, url, description):
         '向Lecture表插入行'
         # lecture_ID自增
         stm = '''insert into Lecture(title, lecturer,issued_time, lecture_time, location, uni ,url,description) values(
             ?,?,?,?,?,?,?,?)'''
         self.cursor.execute(stm,
                             (title,
-                            lecturer,
-                            issued_time,
-                            lecture_time,
-                            location,
-                            uni,
-                            url,
-                            description)
+                             lecturer,
+                             issued_time,
+                             lecture_time,
+                             location,
+                             uni,
+                             url,
+                             description)
                             )
         self.conn.commit()
 
@@ -67,15 +67,15 @@ class InfoDB:
         lecture_all_rows = self.get_Lecture_Datalist()
         list_of_dict = []
         dict_key = [
-                'id',
-                'title',
-                'lecturer',
-                'issued_time',
-                'lecture_time',
-                'location',
-                'uni',
-                'url',
-                'description']
+            'id',
+            'lec_title',
+            'lecturer',
+            'issued_time',
+            'lec_time',
+            'loc',
+            'uni',
+            'url',
+            'description']
         for row in lecture_all_rows:
             element_of_list = {}
             i = 0
@@ -97,8 +97,8 @@ class InfoDB:
         return table:user(type list,element dict)
         '''
         user_all_rows = self.get_User_Datalist()
-        list_of_dict=[]
-        user_dict={}
+        list_of_dict = []
+        user_dict = {}
         for row in user_all_rows:
             user_dict['user_name'] = row[0]
             user_dict['user_pwd'] = row[1]
@@ -107,7 +107,7 @@ class InfoDB:
 
     def get_University_datalist(self):
         return list(self.cursor.execute('select * from University'))
-    
+
     def get_University_datadict(self):
         university_all_rows = self.get_University_datalist()
         list_of_dict = []
@@ -154,6 +154,7 @@ def addUniversity():
         if (name, url) not in db_names:
             infodb.insert_University(name, url)
     infodb.closeDB()
+
 
 def create_table():
     infodb = InfoDB()
