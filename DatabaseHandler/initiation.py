@@ -6,6 +6,8 @@ import sqlite3
 import json
 import os
 
+from DatabaseHandler.utils import *
+
 
 class InfoDB:
     # InfoDB是专门用于管理学校讲座信息的数据库类，有如下功能：
@@ -68,11 +70,11 @@ class InfoDB:
         list_of_dict = []
         dict_key = [
             'id',
-            'lec_title',
+            'title',
             'lecturer',
             'issued_time',
-            'lec_time',
-            'loc',
+            'lecture_time',
+            'location',
             'uni',
             'url',
             'description']
@@ -84,7 +86,9 @@ class InfoDB:
                     element_of_list[dict_key[i]] = element
                 i += 1
             list_of_dict.append(element_of_list)
+            sort_lectureList(list_of_dict, 'issued_time')
         return list_of_dict, dict_key[1:]
+
 
     def get_User_Datalist(self):
         '''

@@ -1,7 +1,11 @@
 import scrapy
-from ..items import InfoItem
-from ..utils import get_lecturer_nlp
+from os.path import dirname
+import sys
 import re
+from ..items import InfoItem
+
+sys.path.append(dirname(dirname(dirname(dirname(__file__)))))
+from DatabaseHandler.utils import get_lecturer_nlp
 
 URL = []
 

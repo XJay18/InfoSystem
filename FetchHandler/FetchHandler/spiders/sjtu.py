@@ -1,7 +1,11 @@
 import scrapy
 import time
+from os.path import dirname
+import sys
 from ..items import InfoItem
-from ..utils import convert_img
+
+sys.path.append(dirname(dirname(dirname(dirname(__file__)))))
+from DatabaseHandler.utils import convert_img
 
 URL = []
 STATE = "/wEPDwUKMTMxMDcwNDI3OQ9kFgICAQ9kFgQCAQ8PFgIeC1JlY29yZGNvdW" \
