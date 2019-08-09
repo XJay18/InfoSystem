@@ -25,7 +25,7 @@ INTERESTED = [
 
 
 # check if the lecture is able to be selected
-def is_interested(description, interested_words=INTERESTED, use_nlp=False):
+def is_interested(description, interested_words=tuple(INTERESTED), use_nlp=False):
     if use_nlp:
         params = {'top k': 30}
         data = json.dumps(description)
@@ -38,12 +38,19 @@ def is_interested(description, interested_words=INTERESTED, use_nlp=False):
         )
         for _, word in resp.json():
             if word in interested_words:
-                return True, word
+                return True
         return False
     else:
         for interest in interested_words:
             if interest in description:
-                return True, interest
+                return True
+        return False
+
+
+def is_wanted_uni(uni, lecture_uni):
+    if uni is None or (uni is not None and lecture_uni == uni):
+        return True
+    else:
         return False
 
 
@@ -85,24 +92,25 @@ def get_lecturer_nlp(des):
 
 def sort_lectureList(list_to_sort, key):
     outer_index = 0
-    for list_item in list_to_sort:
+    for _ in list_to_sort:
         inner_index = outer_index
         while inner_index > 0 \
                 and compareTime(list_to_sort[inner_index - 1][key], list_to_sort[inner_index][key]):
             temp = list_to_sort[inner_index]
-            list_to_sort[inner_index] = list_to_sort[inner_index-1]
-            list_to_sort[inner_index-1] = temp
+            list_to_sort[inner_index] = list_to_sort[inner_index - 1]
+            list_to_sort[inner_index - 1] = temp
             inner_index -= 1
         outer_index += 1
-    return None
+    return
 
 
 def compareTime(t1, t2):
     # str->time
+    if t1 is None or t2 is None:
+        return False
     t1_time = time.strptime(t1, '%Y-%m-%d')
     t2_time = time.strptime(t2, '%Y-%m-%d')
     if int(time.strftime('%Y%m%d', t1_time)) > int(time.strftime('%Y%m%d', t2_time)):
         return True
     else:
         return False
-

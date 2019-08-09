@@ -49,7 +49,8 @@ tk.Label(mainFrame,
 et_uni = tk.Entry(
     mainFrame, bd='3',
     font=(fonts_set['YaHei'], 12),
-    relief='sunken').grid(row=2, column=1)
+    relief='sunken')
+et_uni.grid(row=2, column=1)
 
 # query keywords
 tk.Label(mainFrame,
@@ -84,7 +85,7 @@ def insert_record(treeview, index, dict_record):
 def save_json(dict_info):
     fname = dialog.asksaveasfilename(initialfile=str_set['query_result'],
                                      defaultextension='.json')
-    with open(fname, 'w', encoding='GBK')as f:
+    with open(fname, 'w')as f:
         json.dump(dict_info, f, ensure_ascii=False)
     return
 
@@ -128,9 +129,25 @@ def inquery(event=None):
     tree.heading(str_set['issued_time'], text=str_set['issued_time'])
     tree.heading(str_set['url'], text=str_set['url'])
 
-    resp = requests.get("http://localhost:5000/api/getInfo")
+    # keywords condition
+    keywords = ""
+    for k in et_keyword:
+        keywords += str(k.get()).strip() + '|'
+    data = {'keywords': keywords}
+
+    # uni condition
+    if et_uni.get() is not None and et_uni.get() != "":
+        uni = str(et_uni.get())
+        data.update({"uni": uni})
+
+    print(data)
+
+    # TODO: Time period condition
+
+    resp = requests.post("http://localhost:5000/api/getInfo", data)
     dict_info = resp.json()['data']
     dict_keys = resp.json()['keys']
+
     dict_len = len(dict_info)
     for i in range(dict_len):
         insert_record(tree, i, dict_info[i])

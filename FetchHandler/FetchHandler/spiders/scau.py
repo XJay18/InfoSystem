@@ -42,7 +42,7 @@ class SCAU(scrapy.Spider):
             # find the lecture time via regular expression
             lec_time = re.findall("(20.*?)地.?点", description)
             if len(lec_time) != 0:
-                item['lecutre_time'] = lec_time[0]
+                item['lecture_time'] = lec_time[0]
             item['issued_time'] = response.xpath(
                 "//span[contains(string(),'发布时间')]/text()"
             ).extract()[0].split(':')[1]

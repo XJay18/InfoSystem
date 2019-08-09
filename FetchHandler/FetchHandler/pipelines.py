@@ -14,8 +14,6 @@ sys.path.append(path.dirname(path.dirname(path.dirname(__file__))))
 from DatabaseHandler.initiation import InfoDB
 
 
-
-
 class FetchhandlerPipeline(object):
     def process_item(self, item, spider):
         issued_fmt_time = str(item.get('issued_time', '')).replace('-', '')

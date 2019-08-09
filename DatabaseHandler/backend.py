@@ -1,17 +1,12 @@
 from flask import Flask, request, Response
 
-from DatabaseHandler.initiation import InfoDB
-from DatabaseHandler import utils
+from initiation import InfoDB
+from utils import is_interested, is_wanted_uni, sort_lectureList
 
 app = Flask(__name__)
 
-
-# def get_dict():
-#     result = list(CUR.execute('select * from Lecture'))
-#     return result
-
 infoDB = InfoDB()
-
+infoDB.openDB()
 IS_NLP = False
 SORT_INDEX = 'issued_time'
 
@@ -20,53 +15,48 @@ SORT_INDEX = 'issued_time'
 @app.route('/api/getInfo', methods=['GET', 'POST'])
 def get_list():
     if request.method == 'GET':
-        infoDB.openDB()
-        result = infoDB.get_Lecture_Datadict()
-        infoDB.closeDB()
-        #
-        # dict_key = [
-        #     'id',
-        #     'lec_title',
-        #     'lecturer',
-        #     'issued_time',
-        #     'lec_time',
-        #     'loc',
-        #     'uni',
-        #     'url',
-        #     'description']
-        # for row in datalist:
-        #     element_of_list = {}
-        #     i = 0
-        #     for element in row:
-        #         if element and i != 0:
-        #             element_of_list[dict_key[i]] = element
-        #         i += 1
-        #     list_of_dict.append(element_of_list)
-        return {'data': result[0], 'keys': result[1]}
+        results, keys = infoDB.get_Lecture_Datadict()
+        sort_lectureList(results, SORT_INDEX)
+        return {'data': results, 'keys': keys}
     else:
+        # type: list
+        kwords = request.form.get("keywords").split('|')
+        keywords = []
+        for k in kwords:
+            if k != "":
+                keywords.append(k)
+        # empty query condition
+        if not keywords:
+            keywords.append("")
+
+        uni = request.form.get("uni")
         result = []
         dict_key = [
             'id',
-            'title',
+            'lec_title',
             'lecturer',
             'issued_time',
-            'lecture_time',
+            'lec_time',
             'loc',
             'uni',
             'url',
             'description']
-        infoDB.openDB()
         for lecture_item in infoDB.get_Lecture_Datalist():
-            if utils.is_interested(description=lecture_item[8], use_nlp=IS_NLP):
+            if is_interested(description=lecture_item[8],
+                             interested_words=keywords,
+                             use_nlp=IS_NLP) \
+                    and is_wanted_uni(uni=uni,
+                                      lecture_uni=lecture_item[6]):
                 lecture_dict = {}
                 for key, value in zip(dict_key, lecture_item):
-                    lecture_dict[key] = value
+                    if key != 'id' and key != 'description':
+                        lecture_dict[key] = value
                 result.append(lecture_dict)
-        utils.sort_lectureList(result, SORT_INDEX)
-        infoDB.closeDB()
-        return {'data': result, 'keys': dict_key[1:]}
+        sort_lectureList(result, SORT_INDEX)
+        return {'data': result, 'keys': dict_key[1:-1]}
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000, debug=True)
+    infoDB.closeDB()
 # host='0.0.0.0', port=5000

@@ -3,11 +3,7 @@
 # ==============================================================================
 
 import sqlite3
-import json
 import os
-
-from DatabaseHandler.utils import *
-
 
 class InfoDB:
     # InfoDB是专门用于管理学校讲座信息的数据库类，有如下功能：
@@ -17,10 +13,12 @@ class InfoDB:
     def openDB(self, path=''):
         if path:
             # print('if path')
-            self.conn = sqlite3.connect(path + '/' + 'info_database.sqlite')
+            self.conn = sqlite3.connect(path + '/' + 'info_database.sqlite',
+                                        check_same_thread=False)
         else:
             # print('else path')
-            self.conn = sqlite3.connect(os.path.dirname(__file__) + '/info_database.sqlite')
+            self.conn = sqlite3.connect(os.path.dirname(__file__) + '/info_database.sqlite',
+                                        check_same_thread=False)
         self.cursor = self.conn.cursor()
 
     def closeDB(self):
@@ -70,11 +68,11 @@ class InfoDB:
         list_of_dict = []
         dict_key = [
             'id',
-            'title',
+            'lec_title',
             'lecturer',
             'issued_time',
-            'lecture_time',
-            'location',
+            'lec_time',
+            'loc',
             'uni',
             'url',
             'description']
@@ -82,13 +80,12 @@ class InfoDB:
             element_of_list = {}
             i = 0
             for element in row:
-                if element and i != 0:
+                # we dont want id and description to return to frontend
+                if element and i != 0 and i != len(dict_key) - 1:
                     element_of_list[dict_key[i]] = element
                 i += 1
             list_of_dict.append(element_of_list)
-            sort_lectureList(list_of_dict, 'issued_time')
-        return list_of_dict, dict_key[1:]
-
+        return list_of_dict, dict_key[1:-1]
 
     def get_User_Datalist(self):
         '''
