@@ -16,10 +16,10 @@ from DatabaseHandler.initiation import InfoDB
 
 class FetchhandlerPipeline(object):
     def process_item(self, item, spider):
-        issued_fmt_time = str(item.get('issued_time', '')).replace('-', '')
-        if issued_fmt_time \
-                < datetime.datetime.strftime(datetime.datetime.now() - datetime.timedelta(days=90), '%Y%m%d'):
-            return item
+        # issued_fmt_time = str(item.get('issued_time', '')).replace('-', '')
+        # if issued_fmt_time \
+        #         < datetime.datetime.strftime(datetime.datetime.now() - datetime.timedelta(days=90), '%Y%m%d'):
+        #     return item
         lecturers = ''
         for person in item['lecturer']:
             lecturers += person
@@ -27,7 +27,7 @@ class FetchhandlerPipeline(object):
             item.get('title', ''),
             lecturers,
             item.get('issued_time', ''),
-            item.get('lecture_time', ''),
+            str(item.get('lecture_time', '')).replace('年', '-').replace('月', '-').replace('日', '-'),
             item.get('location', ''),
             item.get('uni', ''),
             item.get('url', ''),

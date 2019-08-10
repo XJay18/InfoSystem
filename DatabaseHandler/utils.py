@@ -1,6 +1,8 @@
 import time
 import json
 import requests
+import copy
+import logging
 
 # NLP utils
 XToken = '0Itav5d7.35733.rYTjnGcPDndq'
@@ -52,6 +54,31 @@ def is_wanted_uni(uni, lecture_uni):
         return True
     else:
         return False
+
+
+# 如果更改了lecture_time的类型就会报错
+def is_wanted_timeslot(start, end, lecture_time):
+    t = ""
+    if lecture_time is not None and lecture_time != "":
+        time_split = str(lecture_time).split('-')
+        y = time_split[0]
+        m = time_split[1]
+        d = time_split[2]
+        if (len(m) == 1): m = '0'+m
+        if (len(d) == 1): d = '0'+d
+        t = y+m+d
+    logging.warning(t)
+    if start is not None \
+            and start != ""  \
+            and start \
+            > t:
+        return False
+    if end is not None \
+            and end != ""  \
+            and end \
+            < t:
+        return False
+    return True
 
 
 def convert_img(url):

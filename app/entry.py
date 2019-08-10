@@ -5,8 +5,8 @@ from tkinter import filedialog as dialog
 import requests
 import json
 import csv
-from InfoSystem.app.res.string import strings_cn as str_set
-from InfoSystem.app.res.font import fonts_cn as fonts_set
+from app.res.string import strings_cn as str_set
+from app.res.font import fonts_cn as fonts_set
 
 window = tk.Tk()
 window.title(str_set['win_title'])
@@ -29,7 +29,8 @@ tk.Label(mainFrame,
 et_time_start = tk.Entry(
     mainFrame, bd='3',
     font=(fonts_set['YaHei'], 12),
-    relief='sunken').grid(row=0, column=1)
+    relief='sunken')
+et_time_start.grid(row=0, column=1)
 
 # query end time
 tk.Label(mainFrame,
@@ -39,7 +40,8 @@ tk.Label(mainFrame,
 et_time_end = tk.Entry(
     mainFrame, bd='3',
     font=(fonts_set['YaHei'], 12),
-    relief='sunken').grid(row=1, column=1)
+    relief='sunken')
+et_time_end.grid(row=1, column=1)
 
 # query uni
 tk.Label(mainFrame,
@@ -140,11 +142,19 @@ def inquery(event=None):
         uni = str(et_uni.get())
         data.update({"uni": uni})
 
+    # Time period condition
+    if et_time_start.get() is not None and et_time_start.get() != "":
+        time_start = str(et_time_start.get())
+        data.update({"time_start": time_start})
+
+    if et_time_end.get() is not None and et_time_end.get() != "":
+        time_end = str(et_time_end.get())
+        data.update({"time_end": time_end})
+
     print(data)
 
-    # TODO: Time period condition
-
     resp = requests.post("http://localhost:5000/api/getInfo", data)
+
     dict_info = resp.json()['data']
     dict_keys = resp.json()['keys']
 
