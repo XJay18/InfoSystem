@@ -133,8 +133,32 @@ def sort_lectureList(list_to_sort, key):
 
 def compareTime(t1, t2):
     # str->time
-    if t1 is None or t2 is None:
+    if t1 is None or t1 == '':
+        return True
+    if t2 is None or t2 == '':
         return False
+    logging.error(t1)
+    logging.error(t2)
+    str1 = str(t1)
+    str2 = str(t2)
+    if not str1[0:4].isdigit():
+        return True
+    if not str2[0:4].isdigit():
+        return False
+    if len(str1.strip()) > 10:
+        t1 = str1[0:4] + '-'
+        t1 = t1 + str1[str1.find('-') + 1:str1.find('-', 6)] + '-'
+        if str1[str1.find('-', 6) + 1:str1.find('-', 6) + 3].isdigit():
+            t1 = t1 + str1[str1.find('-', 6) + 1:str1.find('-', 6) + 3]
+        else:
+            t1 = t1 + str1[str1.find('-', 6) + 1:str1.find('-', 6) + 2]
+    if len(str2.strip()) > 10:
+        t2 = str2[0:4] + '-'
+        t2 = t2 + str2[str2.find('-') + 1:str2.find('-', 6)] + '-'
+        if str2[str2.find('-', 6) + 1: str2.find('-', 6) + 3].isdigit():
+            t2 = t2 + str2[str2.find('-', 6) + 1: str2.find('-', 6) + 3]
+        else:
+            t2 = t2 + str2[str2.find('-', 6) + 1: str2.find('-', 6) + 2]
     t1_time = time.strptime(t1, '%Y-%m-%d')
     t2_time = time.strptime(t2, '%Y-%m-%d')
     if int(time.strftime('%Y%m%d', t1_time)) > int(time.strftime('%Y%m%d', t2_time)):

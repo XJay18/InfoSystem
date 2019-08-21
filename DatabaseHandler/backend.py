@@ -9,7 +9,7 @@ app = Flask(__name__)
 infoDB = InfoDB()
 infoDB.openDB()
 IS_NLP = False
-SORT_INDEX = 'issued_time'
+SORT_INDEX = 'lec_time'
 
 
 # api function
