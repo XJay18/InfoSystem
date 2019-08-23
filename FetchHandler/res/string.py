@@ -28,5 +28,10 @@ strings_cn = {
     'detailed': '详细信息',
     'confirm': '确认',
     'add_web': '添加网页',
-    'add_web_confirm': '发送请求'
+    'add_web_confirm': '发送请求',
+    'update_crawl': '更新讲座信息',
+    'update_success': '更新完成',
+    'choose_spiders': '请选择需要更新信息的院校名称',
+    'warning': '警告',
+    'choose_at_least_once': '请至少选择一个院校名称以更新'
 }

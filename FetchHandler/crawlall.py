@@ -1,13 +1,18 @@
-from scrapy.crawler import CrawlerProcess
+from multiprocessing import Process, Queue
+from scrapy.crawler import CrawlerProcess, CrawlerRunner
+from twisted.internet import reactor
 from scrapy.utils.project import get_project_settings
 
-process = CrawlerProcess(get_project_settings())
-
-spider_names = ['cs_scut', 'jnu', 'lois', 'pku',
+SPIDER_NAMES = ['cs_scut', 'jnu', 'lois', 'pku',
                 'scau', 'se_scut', 'sjtu', 'th']
 
-for spider in spider_names:
-    process.crawl(spider)
+
+def crawl_all(spider_names=SPIDER_NAMES):
+    process = CrawlerProcess(get_project_settings())
+    for spider in spider_names:
+        process.crawl(spider)
+    process.start()
+
 
 if __name__ == "__main__":
-    process.start()
+    crawl_all(SPIDER_NAMES)

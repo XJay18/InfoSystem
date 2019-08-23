@@ -1,12 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog as dialog
+from tkinter import messagebox as messagebox
 
 import requests
 import json
 import csv
-from app.res.string import strings_cn as str_set
-from app.res.font import fonts_cn as fonts_set
+from res.string import strings_cn as str_set
+from res.font import fonts_cn as fonts_set
+
+import sys
+
+sys.path.append('./crawlall')
+from crawlall import crawl_all, SPIDER_NAMES
 
 window = tk.Tk()
 window.title(str_set['win_title'])
@@ -16,7 +22,7 @@ window.geometry('800x420')
 style_btn = ttk.Style()
 style_btn.configure('TButton',
                     font=(fonts_set['YaHei'], 10),
-                    width=10)
+                    width=14)
 label = tk.Label(window,
                  text=str_set['win_title'],
                  font=(fonts_set['YaHeiB'], 20),
@@ -277,7 +283,7 @@ def setting(event=None):
     window_setting = tk.Toplevel(window)
     window_setting.title(str_set['setting'])
     sort_type = tk.StringVar()
-
+    check_values = [tk.BooleanVar() for _ in range(len(SPIDER_NAMES))]
     # get set value
     resp = requests.get("http://localhost:5000/api/getSettings")
     sort_type.set(resp.json().get('sort_type', 'lec_time'))
@@ -286,15 +292,12 @@ def setting(event=None):
     tk.Label(window_setting,
              text=str_set['sort_type'],
              font=(fonts_set['YaHei'], 10),
-             width=10, height=2).grid(row=0, column=0)
+             width=10, height=2).grid(row=0, column=0, columnspan=2)
     rd_sort_type_issue = ttk.Radiobutton(window_setting, text='按发布时间', value='issued_time', variable=sort_type)
     rd_sort_type_lecture = ttk.Radiobutton(window_setting, text='按举办时间', value='lec_time', variable=sort_type)
 
-    rd_sort_type_issue.grid(row=0, column=1, padx=5)
-    rd_sort_type_lecture.grid(row=0, column=2, padx=5)
-    tk.Label(window_setting,
-             text=' ' * 5,
-             width=2).grid(row=0, column=3)
+    rd_sort_type_issue.grid(row=0, column=2, columnspan=3)
+    rd_sort_type_lecture.grid(row=0, column=5, columnspan=3)
 
     def setting_done(event=None):
         params = {'sort_type': sort_type.get()}
@@ -305,10 +308,62 @@ def setting(event=None):
                               style='TButton',
                               text=str_set['confirm'],
                               command=setting_done)
-    btn_set_done.grid(row=1, column=0, columnspan=4)
+    btn_set_done.grid(row=1, column=0, columnspan=8)
+    tk.Label(window_setting,
+             text=' - ' * 40,
+             width=40).grid(row=2, column=0, columnspan=8)
+    tk.Label(window_setting,
+             text=str_set['choose_spiders'],
+             font=(fonts_set['YaHei'], 10),
+             width=30, height=2).grid(row=3, column=0, columnspan=8)
+
+    for r in range(8):
+        ttk.Checkbutton(window_setting,
+                        text=SPIDER_NAMES[r],
+                        variable=check_values[r],
+                        onvalue=True, offvalue=False).grid(row=4, column=r)
+
+    def update_crawl(event=None):
+        spiders_list = []
+        for r in range(8):
+            if check_values[r].get():
+                spiders_list.append(SPIDER_NAMES[r])
+        if not spiders_list:
+            messagebox.showwarning(str_set['warning'], str_set['choose_at_least_once'])
+            return
+        crawl_all(spiders_list)
+        window_update_success = tk.Toplevel(window_setting)
+        window_update_success.title(str_set['update_success'])
+        tk.Label(window_update_success,
+                 text=str_set['update_success'],
+                 font=(fonts_set['YaHei'], 10),
+                 width=10, height=2).pack()
+
+        def close_update_success(event=None):
+            window_update_success.destroy()
+            for r in range(8):
+                check_values[r].set(False)
+            window_setting.destroy()
+            window.destroy()
+
+        ttk.Button(window_update_success,
+                   text=str_set['confirm'],
+                   style='TButton',
+                   command=close_update_success).pack(pady=5)
+
     tk.Label(window_setting,
              text=' ' * 10,
-             width=5).grid(row=2)
+             width=4).grid(row=5)
+
+    btn_update = ttk.Button(window_setting,
+                            text=str_set['update_crawl'],
+                            style='TButton',
+                            command=update_crawl)
+    btn_update.grid(row=6, column=0, columnspan=8)
+    tk.Label(window_setting,
+             text=' ' * 10,
+             width=5).grid(row=7)
+    window_setting.mainloop()
 
 
 def about():
