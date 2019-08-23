@@ -33,7 +33,7 @@ class InfoDB:
     def insert_Lecture(self, title, lecturer, issued_time, lecture_time, location, uni, url, description):
         '向Lecture表插入行'
         # lecture_ID自增
-        stm = '''insert into Lecture(title, lecturer,issued_time, lecture_time, location, uni ,url,description) values(
+        stm = '''insert OR IGNORE into Lecture(title, lecturer,issued_time, lecture_time, location, uni ,url,description) values(
             ?,?,?,?,?,?,?,?)'''
         self.cursor.execute(stm,
                             (title,
@@ -163,31 +163,30 @@ def create_table():
     # autoincrement要是integer才可以
     create_statement1 = '''create table if not exists Lecture(
             id integer primary key autoincrement,
-            title text,
+            title text unique,
             lecturer text,
             issued_time text,
             lecture_time text,
             location text,
             uni text,
             url text,
-            description text,
-            foreign key (uni) references University(uni)
+            description text
         )'''
-    create_statement3 = '''create table if not exists University(
-            uni text primary key,
-            uni_url text
-        )
-        '''
-    create_statement4 = '''create table if not exists User(
-            user_name text primary key,
-            user_pwd text
-        )
-        '''
+    # create_statement3 = '''create table if not exists University(
+    #         uni text primary key,
+    #         uni_url text
+    #     )
+    #     '''
+    # create_statement4 = '''create table if not exists User(
+    #         user_name text primary key,
+    #         user_pwd text
+    #     )
+    #     '''
     infodb.getCursor().execute(create_statement1)
-    infodb.getCursor().execute(create_statement3)
-    infodb.getCursor().execute(create_statement4)
+    # infodb.getCursor().execute(create_statement3)
+    # infodb.getCursor().execute(create_statement4)
     infodb.getConn().commit()
 
 
 create_table()
-addUniversity()
+# addUniversity()

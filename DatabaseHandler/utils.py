@@ -191,9 +191,9 @@ def compareTime(t1, t2):
     t1_time = time.strptime(t1, '%Y-%m-%d')
     t2_time = time.strptime(t2, '%Y-%m-%d')
     if int(time.strftime('%Y%m%d', t1_time)) > int(time.strftime('%Y%m%d', t2_time)):
-        return True
-    else:
         return False
+    else:
+        return True
 
 
 if __name__ == "__main__":
