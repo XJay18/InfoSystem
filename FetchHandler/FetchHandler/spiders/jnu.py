@@ -24,9 +24,12 @@ class IF_JNU(scrapy.Spider):
             "//div[@class='articleCon']//h2/text()"
         ).extract()[0]
         if "学术讲座" in myfilter:
-            title = response.xpath(
-                "//div[@class='conTxt']//p[1]/text()"
-            ).extract()[0]
+            try:
+                title = response.xpath(
+                    "//div[@class='conTxt']//p[1]/text()"
+                ).extract()[0]
+            except IndexError:
+                return
             if title == '\xa0':
                 title = response.xpath(
                     "//h2[@class='title']/text()"

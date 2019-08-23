@@ -7,7 +7,7 @@ strings_cn = {
     'query': '查询',
     'default_query': '默认查询',
     'version': '版本：',
-    'curr_ver': '0.0.2',
+    'curr_ver': '0.1.0',
     'setting': '设置',
     'about': '关于',
     'query_result': '查询结果',

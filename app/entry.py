@@ -258,7 +258,6 @@ def inquery(event=None):
         data.update({"time_end": time_end})
 
     resp = requests.post("http://localhost:5000/api/getInfo", data)
-    print(resp.json())
     dict_info = resp.json()['data']
     dict_keys = resp.json()['keys']
 
@@ -291,8 +290,11 @@ def setting(event=None):
     rd_sort_type_issue = ttk.Radiobutton(window_setting, text='按发布时间', value='issued_time', variable=sort_type)
     rd_sort_type_lecture = ttk.Radiobutton(window_setting, text='按举办时间', value='lec_time', variable=sort_type)
 
-    rd_sort_type_issue.grid(row=0, column=1)
-    rd_sort_type_lecture.grid(row=0, column=2)
+    rd_sort_type_issue.grid(row=0, column=1, padx=5)
+    rd_sort_type_lecture.grid(row=0, column=2, padx=5)
+    tk.Label(window_setting,
+             text=' ' * 5,
+             width=2).grid(row=0, column=3)
 
     def setting_done(event=None):
         params = {'sort_type': sort_type.get()}
@@ -303,7 +305,7 @@ def setting(event=None):
                               style='TButton',
                               text=str_set['confirm'],
                               command=setting_done)
-    btn_set_done.grid(row=1, column=0, columnspan=3)
+    btn_set_done.grid(row=1, column=0, columnspan=4)
     tk.Label(window_setting,
              text=' ' * 10,
              width=5).grid(row=2)
@@ -376,14 +378,18 @@ tk.Label(footFrame,
          text=str_set['version'] + str_set['curr_ver'],
          font=(fonts_set['YaHei'], 12),
          width=15, height=2).grid(row=0, column=0)
-# about
-ttk.Button(footFrame,
-           text=str_set['about'],
-           command=about,
-           style='TButton').grid(row=0, column=1, padx=10)
+
+# add web
 btn_addweb = ttk.Button(footFrame,
                         text=str_set['add_web'],
                         command=add_web,
                         style='TButton')
-btn_addweb.grid(row=0, column=2, padx=10)
+btn_addweb.grid(row=0, column=1, padx=10)
+
+# about
+ttk.Button(footFrame,
+           text=str_set['about'],
+           command=about,
+           style='TButton').grid(row=0, column=2, padx=10)
+
 window.mainloop()
