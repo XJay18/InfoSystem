@@ -5,8 +5,9 @@ strings_cn = {
     'time_end': '查询截止年月',
     'uni': '举办院校',
     'query': '查询',
+    'default_query': '默认查询',
     'version': '版本：',
-    'curr_ver': '0.0.1',
+    'curr_ver': '0.0.2',
     'setting': '设置',
     'about': '关于',
     'query_result': '查询结果',
@@ -19,5 +20,13 @@ strings_cn = {
     'issued_time': '发布时间',
     'get': '导出',
     'get_json': 'json文件',
-    'get_csv': 'csv文件'
+    'get_csv': 'csv文件',
+    'compute_1': ' 共有',
+    'compute_2': '项',
+    'sort_type': '排序方式',
+    'if_nlp': '匹配关键字方式',
+    'detailed': '详细信息',
+    'confirm': '确认',
+    'add_web': '添加网页',
+    'add_web_confirm': '发送请求'
 }

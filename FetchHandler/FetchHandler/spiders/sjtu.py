@@ -5,7 +5,7 @@ import sys
 from ..items import InfoItem
 
 sys.path.append(dirname(dirname(dirname(dirname(__file__)))))
-from DatabaseHandler.utils import convert_img
+from DatabaseHandler.utils import convert_img, get_lecturer_nlp
 
 URL = []
 STATE = "/wEPDwUKMTMxMDcwNDI3OQ9kFgICAQ9kFgQCAQ8PFgIeC1JlY29yZGNvdW" \
@@ -80,7 +80,10 @@ class SJTU(scrapy.Spider):
         if response.request.url not in URL:
             URL.append(response.request.url)
             item['title'] = title
-            item['title'] = title
+            item['lecturer'] = []
+            lecturer = get_lecturer_nlp(description)
+            if lecturer:
+                item['lecturer'].append(lecturer)
             item['issued_time'] = response.xpath(
                 "//div[@class='tc lh300']/text()"
             ).extract()[0].strip()[5:]

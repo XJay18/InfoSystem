@@ -1,7 +1,12 @@
 import scrapy
+from os.path import dirname
+import sys
 from ..items import InfoItem
 
-URL = []
+sys.path.append(dirname(dirname(dirname(dirname(__file__)))))
+from DatabaseHandler.utils import get_lecturer_nlp
+
+TITLE = []
 
 
 class PKU(scrapy.Spider):
@@ -34,22 +39,29 @@ class PKU(scrapy.Spider):
         title = response.xpath(
             "//head//title/text()"
         ).extract()[0].strip().split("-")[0]
-        des = response.xpath(
-            "//div[@class='v_news_content']//text()"
-        ).extract()
-        text = [title]
-        for i in des:
-            if i.strip() != "":
-                text.append(i.strip())
-        description = "".join(text)
-        if response.request.url not in URL:
-            URL.append(response.request.url)
-            item['title'] = title
-            item['issued_time'] = response.xpath(
-                "//p[contains(string(),'发布时间')]/text()"
-            ).extract()[0].split('：')[1]
-            item['url'] = response.request.url
-            item['uni'] = 'PKU'
-            item['description'] = description
-            yield item
-        return
+        if '名家讲坛' in title or '讲座' in title:
+            des = response.xpath(
+                "//div[@class='v_news_content']//text()"
+            ).extract()
+            text = [title]
+            for i in des:
+                if i.strip() != "":
+                    text.append(i.strip())
+            description = "".join(text)
+            if title not in TITLE:
+                TITLE.append(title)
+                item['title'] = title
+                item['lecturer'] = []
+                lecturer = get_lecturer_nlp(description)
+                if lecturer:
+                    item['lecturer'].append(lecturer)
+                item['issued_time'] = response.xpath(
+                    "//p[contains(string(),'发布时间')]/text()"
+                ).extract()[0].split('：')[1]
+                item['url'] = response.request.url
+                item['uni'] = 'PKU'
+                item['description'] = description
+                yield item
+            return
+        else:
+            return
