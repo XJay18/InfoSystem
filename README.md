@@ -22,13 +22,13 @@ Database Practical Training Assignment
         - http://www.cs.sjtu.edu.cn/NewNotice.aspx
     - [x] **Filtering Requirements:** capturing only academic report information related to *information security* and *cryptography*.
     - [x] **Expansion Requirements:** be able to add new web addresses.
-    - [ ] **Display Requirements:** 
+    - [x] **Display Requirements:** 
         - [x] providing the following information:
             > Lecture title, presenter, time, place, university, full text notification link
             
-        - [ ] providing at least 2 ways of time sorting. Sort by holding time. Sort by issued time.
+        - [x] providing at least 2 ways of time sorting. Sort by holding time. Sort by issued time.
              
-        - [ ] displaying the latest month's bulletin.
+        - [x] displaying the latest month's bulletin.
 
 - Modules Used
     - [Scrapy](https://scrapy.org/)
@@ -38,4 +38,6 @@ Database Practical Training Assignment
     - more ...
     
 - Usage
-    - to be done ...
+    1. Download via `git clone https://github.com/XJay18/InfoSystem.git`.
+    2. Run the script in shell `bash deploy.sh`.
+    3. Run the script in shell `bash app.sh`.
