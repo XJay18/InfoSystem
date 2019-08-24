@@ -369,7 +369,7 @@ def setting(event=None):
 def about():
     window_about = tk.Toplevel(window)
     window_about.title(str_set['about'])
-    about = tk.PhotoImage(file='./res/about.png')
+    about = tk.PhotoImage(file='./FetchHandler/res/about.png')
     lb_about = tk.Label(window_about, image=about)
     lb_about.pack()
     window_about.mainloop()
