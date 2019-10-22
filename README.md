@@ -39,5 +39,5 @@ Database Practical Training Assignment
     
 - Usage
     1. Download via `git clone https://github.com/XJay18/InfoSystem.git`.
-    2. Run the script in shell `bash deploy.sh`.
-    3. Run the script in shell `bash app.sh`.
+    2. Run the script in shell `bash deploy.sh` **under `/InfoSystem`**.
+    3. Run the script in shell `bash app.sh` **under `/InfoSystem/FetchHandler`**.
